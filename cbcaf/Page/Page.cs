@@ -142,5 +142,53 @@ namespace cbcaf.Page
                 i++;
             }
         }
+        public T? GetContentById<T>(string id) where T : class, iContent
+        {
+            foreach (iContent c in Contents)
+            {
+                if (c is T t && c.Id == id)
+                {
+                    return t;
+                }
+            }
+
+            return null;
+        }
+        public List<T> GetAllContentsById<T>(string id) where T : class, iContent
+        {
+            List<T> returned = new List<T>();
+            foreach (iContent c in Contents)
+            {
+                if (c is T t && c.Id == id)
+                {
+                    returned.Add(t);
+                }
+            }
+            return returned;
+        }
+        public T? GetFirstContentByGroup<T>(char group) where T : class, iContent
+        {
+            foreach (iContent c in Contents)
+            {
+                if (c is T t && c.Group == group)
+                {
+                    return t;
+                }
+            }
+
+            return null;
+        }
+        public List<T> GetContentsByGroup<T>(char group) where T : class, iContent
+        {
+            List<T> returned = new List<T>();
+            foreach (iContent c in Contents)
+            {
+                if (c is T t && c.Group == group)
+                {
+                    returned.Add(t);
+                }
+            }
+            return returned;
+        }
     }
 }
