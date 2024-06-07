@@ -3,12 +3,12 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 
-namespace cbcaf.Page.Page
+namespace cbcaf.Page
 {
     public interface iContent
     {
-        string Id { get; set; }
-        char Group { get; set; }
+        string? Id { get; set; }
+        char? Group { get; set; }
     }
     public interface iPrintable : iContent
     {
@@ -25,15 +25,15 @@ namespace cbcaf.Page.Page
     }
     public class PlainText : iSelectable
     {
-        public string Id { get; set; }
-        public char Group { get; set; }
+        public string? Id { get; set; }
+        public char? Group { get; set; }
         public string Text { get; set; }
 
-        public PlainText(string text = "", string id = null, char group = null)
+        public PlainText(string text = "", string? id = null, char? group = null)
         {
-            Text = "";
-            Id = null;
-            Group = null;
+            Text = text;
+            Id = id;
+            Group = group;
         }
 
         public void PrintContent()

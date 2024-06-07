@@ -1,4 +1,4 @@
-﻿using cbcaf.Page.Page;
+﻿using cbcaf.Page;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -8,27 +8,27 @@ namespace cbcaf.Page
 {
     public class Page
     {
-        public string Id;
-        public char Group;
+        public string? Id;
+        public char? Group;
         public List<iContent> Contents = new List<iContent>();
 
 
-        public int Cursor { get; }
+        public int Cursor { get; private set; }
 
-        public Page(List<iContent> contents, string id = null, char group = null)
+        public Page(List<iContent> contents, string? id = null, char? group = null)
         {
             Contents = contents;
         }
-        public Page(string id = null, char group = null) { }
+        public Page(string? id = null, char? group = null) { }
 
         public int DefaultCursor()
         {
-            if (Contents == null) return;
+            if (Contents == null) return 0;
             int i = 0;
 
             while (i <= Contents.Count - 1)
             {
-                if (Contents[i] is Text t && t.Selectable == true)
+                if (Contents[i] is iSelectable t && !t.IsSelectDisabled())
                 {
                     return i;
                 }
@@ -49,7 +49,7 @@ namespace cbcaf.Page
             int i = 0;
             while (position + i <= Contents.Count - 1)
             {
-                if (Contents[position + i] is Text t && t.Selectable == true)
+                if (Contents[position + i] is iSelectable t && !t.IsSelectDisabled())
                 {
                     Cursor = position + i;
                     succes = true;
@@ -62,7 +62,7 @@ namespace cbcaf.Page
                 i = 0;
                 while (position + i >= 0)
                 {
-                    if (Contents[position + i] is Text t && t.Selectable == true)
+                    if (Contents[position + i] is iSelectable t && !t.IsSelectDisabled())
                     {
                         Cursor = position + i;
                         succes = true;
@@ -82,7 +82,7 @@ namespace cbcaf.Page
             int i = 1;
             while (Cursor + i <= Contents.Count - 1)
             {
-                if (Contents[Cursor + i] is Text t && t.Selectable == true)
+                if (Contents[Cursor + i] is iSelectable t && !t.IsSelectDisabled())
                 {
                     Cursor = Cursor + i;
                     Display();
@@ -98,7 +98,7 @@ namespace cbcaf.Page
             int i = -1;
             while (Cursor + i >= 0)
             {
-                if (Contents[Cursor + i] is Text t && t.Selectable == true)
+                if (Contents[Cursor + i] is iSelectable t && !t.IsSelectDisabled())
                 {
                     Cursor = Cursor + i;
                     Display();
@@ -133,9 +133,9 @@ namespace cbcaf.Page
             {
                 if(Cursor == i && c is iSelectable s)
                 {
-                    s.PrintSelected();
+                    s.PrintContentSelected();
                 }
-                if(c is iPrintable p)
+                else if(c is iPrintable p)
                 {
                     p.PrintContent();
                 }
