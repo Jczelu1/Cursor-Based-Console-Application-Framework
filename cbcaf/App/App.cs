@@ -1,6 +1,8 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Reflection.PortableExecutable;
+using System.Runtime.CompilerServices;
 using System.Text;
 using System.Threading.Tasks;
 using cbcaf.Page;
@@ -17,7 +19,9 @@ namespace cbcaf.App
         public List<PageHistory> DisplayHistory = new List<PageHistory>();
         public int Indicator { get; private set; }
 
-        //public List<Control> Controls = new List<Control>();
+        public List<Control> Controls = new List<Control>();
+
+        public List<Control> DefaultControls = new List<Control>();
 
         public bool Exit = false;
 
@@ -27,6 +31,7 @@ namespace cbcaf.App
             Pages.Add(new Page.Page());
             CurrentPage = Pages[0];
             CurrentPageIndex = 0;
+            SetDefaultControls();
         }
         public App(List<Page.Page> pages)
         {
@@ -42,6 +47,19 @@ namespace cbcaf.App
                 CurrentPage = Pages[0];
                 CurrentPageIndex = 0;
             }
+            SetDefaultControls();
+        }
+        private void SetDefaultControls()
+        {
+            DefaultControls = new List<Control>
+            {
+                new Control(ConsoleKey.UpArrow, ()=>{ CurrentPage.CursorUp(); }),
+                new Control(ConsoleKey.DownArrow, ()=>{ CurrentPage.CursorDown(); }),
+                new Control(ConsoleKey.Escape, ()=>{ Back(); }),
+                new Control(ConsoleKey.Tab, ()=>{ Forward(); }),
+                new Control(ConsoleKey.Enter, ()=>{ CurrentPage.ExecCursor(); }),
+            };
+            Controls = DefaultControls;
         }
 
         public void RunApp()
@@ -51,9 +69,9 @@ namespace cbcaf.App
             OpenPage(0);
             while (!Exit)
             {
-                //ExecuteKey();
+                ExecuteKey();
 
-                //CurrentPage.Display();
+                CurrentPage.Display();
             }
         }
         public void ExitApp()
@@ -62,7 +80,7 @@ namespace cbcaf.App
         }
         public void OpenPage(int index)
         {
-            if (index < 0 || index >= Pages.Count) throw new ArgumentOutOfRangeException();
+            if (index < 0 || index >= Pages.Count) return;
             Indicator++;
             //Remove after indicator
             int i = Indicator + 1;
@@ -85,6 +103,11 @@ namespace cbcaf.App
             }
 
             CurrentPage.Display();
+        }
+        public void OpenPage(string id)
+        {
+            int index = GetPageIndex(id);
+            OpenPage(index);
         }
         public void Back()
         {
@@ -110,11 +133,18 @@ namespace cbcaf.App
                 CurrentPage.Display();
             }
         }
+        private void ExecuteKey()
+        {
+            ConsoleKey key = KeyReader.GetKey().Key;
+            foreach (Control ctrl in Controls)
+            {
+                if (ctrl.ConsoleKey == key) ctrl.OnPress();
+            }
+        }
 
-        public int? GetPageIndex(string id)
+        public int GetPageIndex(string id)
         {
             int index = Pages.FindIndex(a => a.Id == id);
-            if (index == -1) return null;
             return index;
         }
 
