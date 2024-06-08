@@ -110,6 +110,15 @@ namespace cbcaf.App
                 CurrentPage.Display();
             }
         }
+
+        public int? GetPageIndex(string id)
+        {
+            int index = Pages.FindIndex(a => a.Id == id);
+            if (index == -1) return null;
+            return index;
+        }
+
+
         public PageHistory CurrentPageHistory()
         {
             return new PageHistory(CurrentPageIndex, CurrentPage.Cursor);

@@ -144,51 +144,19 @@ namespace cbcaf.Page
         }
         public T? GetContentById<T>(string id) where T : class, iContent
         {
-            foreach (iContent c in Contents)
-            {
-                if (c is T t && c.Id == id)
-                {
-                    return t;
-                }
-            }
-
-            return null;
+            return Contents.Find(c => c is T t && c.Id == id) as T;
         }
         public List<T> GetAllContentsById<T>(string id) where T : class, iContent
         {
-            List<T> returned = new List<T>();
-            foreach (iContent c in Contents)
-            {
-                if (c is T t && c.Id == id)
-                {
-                    returned.Add(t);
-                }
-            }
-            return returned;
+            return Contents.FindAll(c => c.Id == id).OfType<T>().ToList();
         }
         public T? GetFirstContentByGroup<T>(char group) where T : class, iContent
         {
-            foreach (iContent c in Contents)
-            {
-                if (c is T t && c.Group == group)
-                {
-                    return t;
-                }
-            }
-
-            return null;
+            return Contents.Find(c => c is T t && c.Group == group) as T;
         }
         public List<T> GetContentsByGroup<T>(char group) where T : class, iContent
         {
-            List<T> returned = new List<T>();
-            foreach (iContent c in Contents)
-            {
-                if (c is T t && c.Group == group)
-                {
-                    returned.Add(t);
-                }
-            }
-            return returned;
+            return Contents.FindAll(c => c.Group == group).OfType<T>().ToList();
         }
     }
 }
