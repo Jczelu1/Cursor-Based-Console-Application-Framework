@@ -10,16 +10,32 @@ namespace cbcaf.Page
     {
         public string? Id;
         public char? Group;
-        public List<iContent> Contents = new List<iContent>();
+        public List<IContent> Contents = [];
+
+        public Procedure? OnOpen;
+        public Procedure? OnClose;
+        public Procedure? OnDisplay;
 
 
         public int Cursor { get; private set; }
 
-        public Page(List<iContent> contents, string? id = null, char? group = null)
+        public Page(List<IContent> contents, string? id = null, char? group = null, Procedure? onOpen = null, Procedure? onClose = null, Procedure? onDisplay = null)
         {
             Contents = contents;
+            Id = id;
+            Group = group;
+            OnOpen = onOpen;
+            OnClose = onClose;
+            OnDisplay = onDisplay;
         }
-        public Page(string? id = null, char? group = null) { }
+        public Page(string? id = null, char? group = null, Procedure? onOpen = null, Procedure? onClose = null, Procedure? onDisplay = null) 
+        {
+            Id = id;
+            Group = group;
+            OnOpen = onOpen;
+            OnClose = onClose;
+            OnDisplay = onDisplay;
+        }
 
         public int DefaultCursor()
         {
@@ -28,7 +44,7 @@ namespace cbcaf.Page
 
             while (i <= Contents.Count - 1)
             {
-                if (Contents[i] is iSelectable t && t.IsSelectable)
+                if (Contents[i] is ISelectable t && t.IsSelectable)
                 {
                     return i;
                 }
@@ -49,7 +65,7 @@ namespace cbcaf.Page
             int i = 0;
             while (position + i <= Contents.Count - 1)
             {
-                if (Contents[position + i] is iSelectable t && t.IsSelectable)
+                if (Contents[position + i] is ISelectable t && t.IsSelectable)
                 {
                     Cursor = position + i;
                     succes = true;
@@ -62,7 +78,7 @@ namespace cbcaf.Page
                 i = 0;
                 while (position + i >= 0)
                 {
-                    if (Contents[position + i] is iSelectable t && t.IsSelectable)
+                    if (Contents[position + i] is ISelectable t && t.IsSelectable)
                     {
                         Cursor = position + i;
                         succes = true;
@@ -82,9 +98,9 @@ namespace cbcaf.Page
             int i = 1;
             while (Cursor + i <= Contents.Count - 1)
             {
-                if (Contents[Cursor + i] is iSelectable t && t.IsSelectable)
+                if (Contents[Cursor + i] is ISelectable t && t.IsSelectable)
                 {
-                    Cursor = Cursor + i;
+                    Cursor += i;
                     Display();
                     break;
                 }
@@ -98,9 +114,9 @@ namespace cbcaf.Page
             int i = -1;
             while (Cursor + i >= 0)
             {
-                if (Contents[Cursor + i] is iSelectable t && t.IsSelectable)
+                if (Contents[Cursor + i] is ISelectable t && t.IsSelectable)
                 {
-                    Cursor = Cursor + i;
+                    Cursor += i;
                     Display();
                     break;
                 }
@@ -110,51 +126,51 @@ namespace cbcaf.Page
 
         public void ExecCursor()
         {
-            if (Contents != null)
+            if (Contents == null) return;
+            if (Contents.Count > Cursor)
             {
-                if (Contents.Count > Cursor)
-                {
-                    if (Contents[Cursor] is iExecutable e)
-                        e.Execute();
-                }
+                if (Contents[Cursor] is IExecutable e)
+                    e.Execute();
             }
         }
         public void Display()
         {
             Console.Clear();
-            Console.CursorVisible = false;
+
+            OnDisplay?.Invoke();
+
             DisplayContents();
 
         }
         public void DisplayContents()
         {
             int i = 0;
-            foreach (iContent c in Contents)
+            foreach (IContent c in Contents)
             {
-                if(Cursor == i && c is iSelectable s)
+                if(Cursor == i && c is ISelectable s)
                 {
                     s.PrintContentSelected();
                 }
-                else if(c is iPrintable p)
+                else if(c is IPrintable p)
                 {
                     p.PrintContent();
                 }
                 i++;
             }
         }
-        public T? GetContentById<T>(string id) where T : class, iContent
+        public T? GetContentById<T>(string id) where T : class, IContent
         {
             return Contents.Find(c => c is T t && c.Id == id) as T;
         }
-        public List<T> GetAllContentsById<T>(string id) where T : class, iContent
+        public List<T> GetAllContentsById<T>(string id) where T : class, IContent
         {
             return Contents.FindAll(c => c.Id == id).OfType<T>().ToList();
         }
-        public T? GetFirstContentByGroup<T>(char group) where T : class, iContent
+        public T? GetFirstContentByGroup<T>(char group) where T : class, IContent
         {
             return Contents.Find(c => c is T t && c.Group == group) as T;
         }
-        public List<T> GetContentsByGroup<T>(char group) where T : class, iContent
+        public List<T> GetContentsByGroup<T>(char group) where T : class, IContent
         {
             return Contents.FindAll(c => c.Group == group).OfType<T>().ToList();
         }

@@ -12,23 +12,22 @@ namespace cbcaf.App
 {
     public class App
     {
-        public List<Page.Page> Pages = new List<Page.Page>();
+        public List<Page.Page> Pages = [];
         public Page.Page CurrentPage { get; private set; }
         public int CurrentPageIndex { get; private set; }
 
-        public List<PageHistory> DisplayHistory = new List<PageHistory>();
+        public List<PageHistory> DisplayHistory = [];
         public int Indicator { get; private set; }
 
-        public List<Control> Controls = new List<Control>();
+        public List<Control> Controls = [];
 
-        public List<Control> DefaultControls = new List<Control>();
+        public List<Control> DefaultControls = [];
 
         public bool Exit = false;
 
         public App() 
         {
-            Pages = new List<Page.Page>();
-            Pages.Add(new Page.Page());
+            Pages = [new Page.Page()];
             CurrentPage = Pages[0];
             CurrentPageIndex = 0;
             SetDefaultControls();
@@ -51,19 +50,20 @@ namespace cbcaf.App
         }
         private void SetDefaultControls()
         {
-            DefaultControls = new List<Control>
-            {
+            DefaultControls =
+            [
                 new Control(ConsoleKey.UpArrow, ()=>{ CurrentPage.CursorUp(); }),
                 new Control(ConsoleKey.DownArrow, ()=>{ CurrentPage.CursorDown(); }),
                 new Control(ConsoleKey.Escape, ()=>{ Back(); }),
                 new Control(ConsoleKey.Tab, ()=>{ Forward(); }),
                 new Control(ConsoleKey.Enter, ()=>{ CurrentPage.ExecCursor(); }),
-            };
+            ];
             Controls = DefaultControls;
         }
 
         public void RunApp()
         {
+            Console.CursorVisible = false;
             DisplayHistory.Clear();
             Indicator = -1;
             OpenPage(0);
@@ -80,6 +80,7 @@ namespace cbcaf.App
         }
         public void OpenPage(int index)
         {
+
             if (index < 0 || index >= Pages.Count) return;
             Indicator++;
             //Remove after indicator
@@ -88,6 +89,10 @@ namespace cbcaf.App
             {
                 DisplayHistory.RemoveAt(i);
             }
+            //old page
+            CurrentPage.OnClose?.Invoke();
+            DisplayHistory[Indicator] = GetCurrentPageHistory();
+            //new page
             CurrentPageIndex = index;
             CurrentPage = Pages[index];
 
@@ -95,13 +100,13 @@ namespace cbcaf.App
 
             if (Indicator >= DisplayHistory.Count)
             {
-                DisplayHistory.Add(CurrentPageHistory());
+                DisplayHistory.Add(GetCurrentPageHistory());
             }
             else
             {
-                DisplayHistory[Indicator] = CurrentPageHistory();
+                DisplayHistory[Indicator] = GetCurrentPageHistory();
             }
-
+            CurrentPage.OnOpen?.Invoke();
             CurrentPage.Display();
         }
         public void OpenPage(string id)
@@ -113,11 +118,15 @@ namespace cbcaf.App
         {
             if (Indicator != 0)
             {
-                DisplayHistory[Indicator] = CurrentPageHistory();
+                //old page
+                CurrentPage.OnClose?.Invoke();
+                DisplayHistory[Indicator] = GetCurrentPageHistory();
+                //new page
                 Indicator--;
                 CurrentPageIndex = DisplayHistory[Indicator].Index;
                 CurrentPage = Pages[CurrentPageIndex];
                 CurrentPage.SetCursor(DisplayHistory[Indicator].Cursor);
+                CurrentPage.OnOpen?.Invoke();
                 CurrentPage.Display();
             }
         }
@@ -125,21 +134,22 @@ namespace cbcaf.App
         {
             if (Indicator + 1 < DisplayHistory.Count)
             {
-                DisplayHistory[Indicator] = CurrentPageHistory();
+                //old page
+                CurrentPage.OnClose?.Invoke();
+                DisplayHistory[Indicator] = GetCurrentPageHistory();
+                //new page
                 Indicator++;
                 CurrentPageIndex = DisplayHistory[Indicator].Index;
                 CurrentPage = Pages[CurrentPageIndex];
                 CurrentPage.SetCursor(DisplayHistory[Indicator].Cursor);
+                CurrentPage.OnOpen?.Invoke();
                 CurrentPage.Display();
             }
         }
         private void ExecuteKey()
         {
             ConsoleKey key = KeyReader.GetKey().Key;
-            foreach (Control ctrl in Controls)
-            {
-                if (ctrl.ConsoleKey == key) ctrl.OnPress();
-            }
+            Controls.FindAll(ctrl => ctrl.ConsoleKey == key).ForEach(ctrl => ctrl.OnPress());
         }
 
         public int GetPageIndex(string id)
@@ -149,19 +159,14 @@ namespace cbcaf.App
         }
 
 
-        public PageHistory CurrentPageHistory()
+        public PageHistory GetCurrentPageHistory()
         {
             return new PageHistory(CurrentPageIndex, CurrentPage.Cursor);
         }
     }
-    public class PageHistory
+    public struct PageHistory(int index, int cursor)
     {
-        public int Index { get; set; }
-        public int Cursor { get; set; }
-        public PageHistory(int index, int cursor)
-        {
-            Index = index;
-            Cursor = cursor;
-        }
+        public int Index { get; set; } = index;
+        public int Cursor { get; set; } = cursor;
     }
 }

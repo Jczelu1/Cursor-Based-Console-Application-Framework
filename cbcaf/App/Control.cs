@@ -17,16 +17,10 @@ namespace cbcaf.App
             return keyInfo;
         }
     }
-    public class Control
+    public struct Control(ConsoleKey consolekey, Procedure onPress)
     {
-        public ConsoleKey ConsoleKey;
+        public ConsoleKey ConsoleKey = consolekey;
 
-        public Procedure OnPress;
-
-        public Control(ConsoleKey consolekey, Procedure onPress)
-        {
-            ConsoleKey = consolekey;
-            OnPress = onPress;
-        }
+        public Procedure OnPress = onPress;
     }
 }

@@ -5,21 +5,21 @@ using System.Text;
 
 namespace cbcaf.Page
 {
-    public interface iContent
+    public interface IContent
     {
         string? Id { get; set; }
         char? Group { get; set; }
     }
-    public interface iPrintable : iContent
+    public interface IPrintable : IContent
     {
         public void PrintContent();
     }
-    public interface iSelectable : iPrintable
+    public interface ISelectable : IPrintable
     {
         public bool IsSelectable { get; set; }
         public void PrintContentSelected();
     }
-    public interface iExecutable : iSelectable
+    public interface IExecutable : ISelectable
     {
         public void Execute();
     }

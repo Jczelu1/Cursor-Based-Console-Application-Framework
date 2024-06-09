@@ -6,7 +6,7 @@ using System.Threading.Tasks;
 
 namespace cbcaf.Page
 {
-    public class PlainText : iSelectable
+    public class PlainText : ISelectable
     {
         public string? Id { get; set; }
         public char? Group { get; set; }
@@ -32,7 +32,7 @@ namespace cbcaf.Page
             Console.WriteLine(">" + Text);
         }
     }
-    public class PlainTextButton : PlainText, iExecutable
+    public class PlainTextButton : PlainText, IExecutable
     {
         public Procedure OnExecute;
 
