@@ -80,19 +80,21 @@ namespace cbcaf.App
         }
         public void OpenPage(int index)
         {
-
             if (index < 0 || index >= Pages.Count) return;
-            Indicator++;
+            //old page
+            if (Indicator >=0)
+            {
+                CurrentPage.OnClose?.Invoke();
+                DisplayHistory[Indicator] = GetCurrentPageHistory();
+            }
             //Remove after indicator
-            int i = Indicator + 1;
+            int i = Indicator + 2;
             while (i < DisplayHistory.Count)
             {
                 DisplayHistory.RemoveAt(i);
             }
-            //old page
-            CurrentPage.OnClose?.Invoke();
-            DisplayHistory[Indicator] = GetCurrentPageHistory();
             //new page
+            Indicator++;
             CurrentPageIndex = index;
             CurrentPage = Pages[index];
 
