@@ -16,39 +16,11 @@ namespace cbcaf.Page
     }
     public interface iSelectable : iPrintable
     {
-        public bool IsSelectDisabled();
+        public bool IsSelectable { get; set; }
         public void PrintContentSelected();
     }
-    public interface iExecutable : iContent
+    public interface iExecutable : iSelectable
     {
         public void Execute();
-    }
-    public class PlainText : iSelectable
-    {
-        public string? Id { get; set; }
-        public char? Group { get; set; }
-        public string Text { get; set; }
-
-        public PlainText(string text = "", string? id = null, char? group = null)
-        {
-            Text = text;
-            Id = id;
-            Group = group;
-        }
-
-        public void PrintContent()
-        {
-            Console.WriteLine(Text);
-        }
-
-        public void PrintContentSelected()
-        {
-            Console.WriteLine(">" + Text);
-        }
-
-        public bool IsSelectDisabled()
-        {
-            return false;
-        }
     }
 }

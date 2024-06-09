@@ -28,7 +28,7 @@ namespace cbcaf.Page
 
             while (i <= Contents.Count - 1)
             {
-                if (Contents[i] is iSelectable t && !t.IsSelectDisabled())
+                if (Contents[i] is iSelectable t && t.IsSelectable)
                 {
                     return i;
                 }
@@ -49,7 +49,7 @@ namespace cbcaf.Page
             int i = 0;
             while (position + i <= Contents.Count - 1)
             {
-                if (Contents[position + i] is iSelectable t && !t.IsSelectDisabled())
+                if (Contents[position + i] is iSelectable t && t.IsSelectable)
                 {
                     Cursor = position + i;
                     succes = true;
@@ -62,7 +62,7 @@ namespace cbcaf.Page
                 i = 0;
                 while (position + i >= 0)
                 {
-                    if (Contents[position + i] is iSelectable t && !t.IsSelectDisabled())
+                    if (Contents[position + i] is iSelectable t && t.IsSelectable)
                     {
                         Cursor = position + i;
                         succes = true;
@@ -82,7 +82,7 @@ namespace cbcaf.Page
             int i = 1;
             while (Cursor + i <= Contents.Count - 1)
             {
-                if (Contents[Cursor + i] is iSelectable t && !t.IsSelectDisabled())
+                if (Contents[Cursor + i] is iSelectable t && t.IsSelectable)
                 {
                     Cursor = Cursor + i;
                     Display();
@@ -98,7 +98,7 @@ namespace cbcaf.Page
             int i = -1;
             while (Cursor + i >= 0)
             {
-                if (Contents[Cursor + i] is iSelectable t && !t.IsSelectDisabled())
+                if (Contents[Cursor + i] is iSelectable t && t.IsSelectable)
                 {
                     Cursor = Cursor + i;
                     Display();
