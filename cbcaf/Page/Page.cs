@@ -135,12 +135,12 @@ namespace cbcaf.Page
         }
         public void Display()
         {
+            Console.SetCursorPosition(0,0);
             Console.Clear();
 
             OnDisplay?.Invoke();
 
             DisplayContents();
-
         }
         public void DisplayContents()
         {

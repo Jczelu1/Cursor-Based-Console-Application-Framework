@@ -12,6 +12,8 @@ namespace cbcaf.Page
         public char? Group { get; set; }
         public string Text { get; set; }
 
+        public static string Cursor { get; set; } = ">";
+
         public bool IsSelectable { get; set; }
 
         public PlainText(string text = "", string? id = null, char? group = null, bool isSelectable = true)
@@ -29,7 +31,7 @@ namespace cbcaf.Page
 
         public void PrintContentSelected()
         {
-            Console.WriteLine(">" + Text);
+            Console.WriteLine(Cursor + Text);
         }
     }
     public class PlainTextButton : PlainText, IExecutable

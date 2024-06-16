@@ -1,13 +1,8 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
-using System.Reflection.PortableExecutable;
-using System.Runtime.CompilerServices;
 using System.Text;
-using System.Threading.Tasks;
 using cbcaf.Page;
-using Microsoft.VisualBasic;
-
 namespace cbcaf.App
 {
     public class App
@@ -25,16 +20,43 @@ namespace cbcaf.App
 
         public bool Exit = false;
 
-        public App() 
+        public string? Title;
+
+        //width
+        public int StartWidth { get; set; }
+        public int StartHeight { get; set; }
+
+        public int? MinWidth { get; set; }
+        public int? MinHeight { get; set; }
+        public int? MaxWidth { get; set; }
+        public int? MaxHeight { get; set; }
+
+        public App(string? title = null, int startWidth = 128, int startHeight = 32, int? minWidth = 10, int? minHeight = 10, int? maxWidth = null, int? maxHeight = null) 
         {
             Pages = [new Page.Page()];
             CurrentPage = Pages[0];
+            Title = title;
+            StartWidth = startWidth;
+            StartHeight = startHeight;
+            MinWidth = minWidth;
+            MinHeight = minHeight;
+            MaxWidth = maxWidth;
+            MaxHeight = maxHeight;
+
             CurrentPageIndex = 0;
             SetDefaultControls();
         }
-        public App(List<Page.Page> pages)
+        public App(List<Page.Page> pages, string? title = null, int startWidth = 128, int startHeight = 32, int? minWidth = 10, int? minHeight = 10, int? maxWidth = null, int? maxHeight = null)
         {
             Pages = pages;
+            Title = title;
+            StartWidth = startWidth;
+            StartHeight = startHeight;
+            MinWidth = minWidth;
+            MinHeight = minHeight;
+            MaxWidth = maxWidth;
+            MaxHeight = maxHeight;
+
             if (Pages.Count > 0)
             {
                 CurrentPage = pages[0];
@@ -64,14 +86,24 @@ namespace cbcaf.App
         public void RunApp()
         {
             Console.CursorVisible = false;
+            Console.Title = Title??"Console App";
+            try
+            {
+                Console.SetWindowSize(StartWidth, StartHeight);
+                if (OperatingSystem.IsWindows())
+                    Console.SetBufferSize(StartWidth, StartHeight);
+            }
+            catch (Exception e)
+            {
+                throw new ArgumentException("Invalid start window size: " + e.Message);
+            }
             DisplayHistory.Clear();
             Indicator = -1;
             OpenPage(0);
             while (!Exit)
             {
+                WindowSizeCheck();
                 ExecuteKey();
-
-                CurrentPage.Display();
             }
         }
         public void ExitApp()
@@ -164,6 +196,36 @@ namespace cbcaf.App
         public PageHistory GetCurrentPageHistory()
         {
             return new PageHistory(CurrentPageIndex, CurrentPage.Cursor);
+        }
+
+        private void WindowSizeCheck()
+        {
+            int newWidth = Console.WindowWidth;
+            int newHeight = Console.WindowHeight;
+
+            if (MinWidth != null && Console.WindowWidth < MinWidth)
+            {
+                newWidth = MinWidth ?? 10;
+            }
+            else if (MaxWidth != null && Console.WindowWidth > MaxWidth)
+            {
+                newWidth = MaxWidth ?? 10;
+            }
+
+            if (MinHeight != null && Console.WindowHeight < MinHeight)
+            {
+                newHeight = MinHeight ?? 10;
+            }
+            else if (MaxHeight != null && Console.WindowHeight > MaxHeight)
+            {
+                newHeight = MaxHeight ?? 10;
+            }
+
+            if (newWidth != Console.WindowWidth || newHeight != Console.WindowHeight)
+            {
+                Console.SetWindowSize(newWidth, newHeight);
+                CurrentPage.Display();
+            }
         }
     }
     public struct PageHistory(int index, int cursor)
