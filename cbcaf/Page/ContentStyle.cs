@@ -23,7 +23,6 @@ namespace cbcaf.Page
     public enum Style
     {
         // Text attributes
-        Reset = 0,
         Bold = 1,
         Dim = 2,
         Italic = 3,
