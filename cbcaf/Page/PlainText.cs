@@ -29,7 +29,7 @@ namespace cbcaf.Page
 
         public void PrintContentSelected()
         {
-            Console.WriteLine(ContentStyle.Cursor + Text);
+            Console.WriteLine(ContentStyle.GetCursor() + Text);
         }
     }
     public class PlainTextButton : PlainText, IExecutable

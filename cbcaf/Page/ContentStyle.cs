@@ -8,20 +8,51 @@ namespace cbcaf.Page
 {
     public class ContentStyle
     {
-        public static string Cursor { get; set; } = ">";
+        public static string Cursor { private get; set; } = ">";
 
+        public static List<Style> CursorStyles = new List<Style>();
+
+        public static List<Style> DefaultStyles  = new List<Style>();
+
+        public static string GetCursor()
+        {
+            return StyleText(Cursor, CursorStyles);
+        }
+        public static void ApplyStyle(Style style)
+        {
+            Console.Write(GetStyleString(style));
+        }
+        public static void ApplyStyles(List<Style> styles)
+        {
+            Console.Write(GetStyleString(styles));
+        }
+        public static string GetStyleString(Style style)
+        {
+            return $"\u001b[{(int)style}m";
+        }
+
+        public static string GetStyleString(List<Style> styles)
+        {
+            string formatCodes = string.Join(";", styles.ConvertAll(style => ((int)style).ToString()));
+            return $"\u001b[{formatCodes}m";
+        }
+        public static void SetStylesToDefault()
+        {
+            ApplyStyles(DefaultStyles);
+        }
         public static string StyleText(string text, Style style)
         {
-            return $"\u001b[{(int)style}m{text}\u001b[0m";
+            return $"{GetStyleString(style)}{text}\u001b[0m{GetStyleString(DefaultStyles)}";
         }
-        public static string StyleText(string text, Style[] styles)
+        public static string StyleText(string text, List<Style> styles)
         {
-            string formatCodes = string.Join(";", Array.ConvertAll(styles, style => ((int)style).ToString()));
-            return $"\u001b[{formatCodes}m{text}\u001b[0m";
+            return $"{GetStyleString(styles)}{text}\u001b[0m{GetStyleString(DefaultStyles)}";
         }
+
     }
     public enum Style
     {
+        Reset = 0,
         // Text attributes
         Bold = 1,
         Dim = 2,
