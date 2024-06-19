@@ -22,12 +22,12 @@ namespace cbcaf.Page
             IsSelectable = isSelectable;
         }
 
-        public void PrintContent()
+        public virtual void PrintContent()
         {
             Console.WriteLine(Text);
         }
 
-        public void PrintContentSelected()
+        public virtual void PrintContentSelected()
         {
             Console.WriteLine(ContentStyle.GetCursor() + Text);
         }

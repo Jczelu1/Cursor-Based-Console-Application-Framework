@@ -12,20 +12,13 @@ namespace cbcaf.Page
 
         public static List<Style> CursorStyles = new List<Style>();
 
-        public static List<Style> DefaultStyles  = new List<Style>();
+        public static List<Style> PreviousStyles = new List<Style>();
 
         public static string GetCursor()
         {
             return StyleText(Cursor, CursorStyles);
         }
-        public static void ApplyStyle(Style style)
-        {
-            Console.Write(GetStyleString(style));
-        }
-        public static void ApplyStyles(List<Style> styles)
-        {
-            Console.Write(GetStyleString(styles));
-        }
+
         public static string GetStyleString(Style style)
         {
             return $"\u001b[{(int)style}m";
@@ -36,17 +29,28 @@ namespace cbcaf.Page
             string formatCodes = string.Join(";", styles.ConvertAll(style => ((int)style).ToString()));
             return $"\u001b[{formatCodes}m";
         }
-        public static void SetStylesToDefault()
+        public static void ApplyStyle(Style style)
         {
-            ApplyStyles(DefaultStyles);
+            Console.Write(GetStyleString(style));
+            PreviousStyles = new List<Style>() { style };
         }
+        public static void ApplyStyles(List<Style> styles)
+        {
+            Console.Write(GetStyleString(styles));
+            PreviousStyles = styles;
+        }
+        public static void ApplyPreviousStyles()
+        {
+            ApplyStyles(PreviousStyles);
+        }
+        
         public static string StyleText(string text, Style style)
         {
-            return $"{GetStyleString(style)}{text}\u001b[0m{GetStyleString(DefaultStyles)}";
+            return $"{GetStyleString(style)}{text}\u001b[0m{GetStyleString(PreviousStyles)}";
         }
         public static string StyleText(string text, List<Style> styles)
         {
-            return $"{GetStyleString(styles)}{text}\u001b[0m{GetStyleString(DefaultStyles)}";
+            return $"{GetStyleString(styles)}{text}\u001b[0m{GetStyleString(PreviousStyles)}";
         }
 
     }
