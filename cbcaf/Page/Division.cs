@@ -18,7 +18,7 @@ namespace cbcaf.Page
         public int MarginRight { get; set; }
         public bool FloatLeft { get; set; }
 
-        public List<Style> Styles { get; set; }
+        public List<Style> Styles { get; set; } = [];
         public Align align { get; set; }
 
         public List<IContent> Contents { get; set; } = [];
