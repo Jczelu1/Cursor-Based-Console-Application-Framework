@@ -10,7 +10,7 @@ namespace cbcaf.Page
     {
         public string? Id;
         public char? Group;
-        public List<IContent> Contents = [];
+        public Division Body = new Division([]);
 
         public Procedure? OnOpen;
         public Procedure? OnClose;
@@ -21,7 +21,7 @@ namespace cbcaf.Page
 
         public Page(List<IContent> contents, string? id = null, char? group = null, Procedure? onOpen = null, Procedure? onClose = null, Procedure? onDisplay = null)
         {
-            Contents = contents;
+            Body.Contents = contents;
             Id = id;
             Group = group;
             OnOpen = onOpen;
@@ -39,12 +39,12 @@ namespace cbcaf.Page
 
         public int DefaultCursor()
         {
-            if (Contents == null) return 0;
+            if (Body.Contents == null) return 0;
             int i = 0;
 
-            while (i <= Contents.Count - 1)
+            while (i <= Body.Contents.Count - 1)
             {
-                if (Contents[i] is ISelectable t && t.IsSelectable)
+                if (Body.Contents[i] is ISelectable t && t.IsSelectable)
                 {
                     return i;
                 }
@@ -59,13 +59,13 @@ namespace cbcaf.Page
 
         public void SetCursor(int position)
         {
-            if (Contents == null) return;
+            if (Body.Contents == null) return;
             if (position == Cursor) return;
             bool succes = false;
             int i = 0;
-            while (position + i <= Contents.Count - 1)
+            while (position + i <= Body.Contents.Count - 1)
             {
-                if (Contents[position + i] is ISelectable t && t.IsSelectable)
+                if (Body.Contents[position + i] is ISelectable t && t.IsSelectable)
                 {
                     Cursor = position + i;
                     succes = true;
@@ -78,7 +78,7 @@ namespace cbcaf.Page
                 i = 0;
                 while (position + i >= 0)
                 {
-                    if (Contents[position + i] is ISelectable t && t.IsSelectable)
+                    if (Body.Contents[position + i] is ISelectable t && t.IsSelectable)
                     {
                         Cursor = position + i;
                         succes = true;
@@ -94,11 +94,11 @@ namespace cbcaf.Page
         }
         public void CursorDown()
         {
-            if (Contents == null) return;
+            if (Body.Contents == null) return;
             int i = 1;
-            while (Cursor + i <= Contents.Count - 1)
+            while (Cursor + i <= Body.Contents.Count - 1)
             {
-                if (Contents[Cursor + i] is ISelectable t && t.IsSelectable)
+                if (Body.Contents[Cursor + i] is ISelectable t && t.IsSelectable)
                 {
                     Cursor += i;
                     Display();
@@ -110,11 +110,11 @@ namespace cbcaf.Page
 
         public void CursorUp()
         {
-            if (Contents == null) return;
+            if (Body.Contents == null) return;
             int i = -1;
             while (Cursor + i >= 0)
             {
-                if (Contents[Cursor + i] is ISelectable t && t.IsSelectable)
+                if (Body.Contents[Cursor + i] is ISelectable t && t.IsSelectable)
                 {
                     Cursor += i;
                     Display();
@@ -126,10 +126,10 @@ namespace cbcaf.Page
 
         public void ExecCursor()
         {
-            if (Contents == null) return;
-            if (Contents.Count > Cursor)
+            if (Body.Contents == null) return;
+            if (Body.Contents.Count > Cursor)
             {
-                if (Contents[Cursor] is IExecutable e)
+                if (Body.Contents[Cursor] is IExecutable e)
                     e.Execute();
             }
         }
@@ -145,7 +145,7 @@ namespace cbcaf.Page
         public void DisplayContents()
         {
             int i = 0;
-            foreach (IContent c in Contents)
+            foreach (IContent c in Body.Contents)
             {
                 if(Cursor == i && c is ISelectable s)
                 {
@@ -160,19 +160,19 @@ namespace cbcaf.Page
         }
         public T? GetContentById<T>(string id) where T : class, IContent
         {
-            return Contents.Find(c => c is T t && c.Id == id) as T;
+            return Body.Contents.Find(c => c is T t && c.Id == id) as T;
         }
         public List<T> GetAllContentsById<T>(string id) where T : class, IContent
         {
-            return Contents.FindAll(c => c.Id == id).OfType<T>().ToList();
+            return Body.Contents.FindAll(c => c.Id == id).OfType<T>().ToList();
         }
         public T? GetFirstContentByGroup<T>(char group) where T : class, IContent
         {
-            return Contents.Find(c => c is T t && c.Group == group) as T;
+            return Body.Contents.Find(c => c is T t && c.Group == group) as T;
         }
         public List<T> GetContentsByGroup<T>(char group) where T : class, IContent
         {
-            return Contents.FindAll(c => c.Group == group).OfType<T>().ToList();
+            return Body.Contents.FindAll(c => c.Group == group).OfType<T>().ToList();
         }
     }
 }

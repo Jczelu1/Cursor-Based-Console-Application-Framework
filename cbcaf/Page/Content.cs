@@ -7,8 +7,8 @@ namespace cbcaf.Page
 {
     public interface IContent
     {
-        string? Id { get; set; }
-        char? Group { get; set; }
+        public string? Id { get; set; }
+        public char? Group { get; set; }
     }
     public interface IPrintable : IContent
     {
