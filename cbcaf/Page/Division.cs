@@ -8,6 +8,7 @@ namespace cbcaf.Page
 {
     public class Division : IContent
     {
+        public int Cursor { get; private set; }
         public string? Id { get; set; }
         public char? Group { get; set; }
         public int? Width { get; set; }
@@ -38,6 +39,16 @@ namespace cbcaf.Page
         public void PrintDivision(int leftOffset, int topOffset, int? cursor)
         {
             //code here
+            int currentLeft = leftOffset + MarginLeft;
+            int currentTop = topOffset + MarginTop;
+            int currentWidth = Width?? Console.WindowWidth - leftOffset;
+            foreach (IContent content in Contents)
+            {
+                if(content is  Division d)
+                {
+                        
+                }
+            }
         }
 
         public T? GetContentById<T>(string id) where T : class, IContent
