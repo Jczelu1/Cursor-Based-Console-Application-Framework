@@ -18,6 +18,9 @@ namespace cbcaf.Page
         public int MarginRight { get; set; }
         public bool FloatLeft { get; set; }
 
+        public List<Style> Styles { get; set; }
+        public Align align { get; set; }
+
         public List<IContent> Contents { get; set; } = [];
 
         public Division(List<IContent> contents, int? width = null, int? height = null, int marginTop = 0, int marginBottom = 0, int marginLeft = 0, int marginRight = 0, bool floatLeft = false)
@@ -32,10 +35,26 @@ namespace cbcaf.Page
             FloatLeft = floatLeft;
         }
 
-        public void PrintDivision(int leftOffset, int topOffset)
+        public void PrintDivision(int leftOffset, int topOffset, int? cursor)
         {
             //code here
         }
 
+        public T? GetContentById<T>(string id) where T : class, IContent
+        {
+            return Contents.Find(c => c is T t && c.Id == id) as T;
+        }
+        public List<T> GetAllContentsById<T>(string id) where T : class, IContent
+        {
+            return Contents.FindAll(c => c.Id == id).OfType<T>().ToList();
+        }
+        public T? GetFirstContentByGroup<T>(char group) where T : class, IContent
+        {
+            return Contents.Find(c => c is T t && c.Group == group) as T;
+        }
+        public List<T> GetContentsByGroup<T>(char group) where T : class, IContent
+        {
+            return Contents.FindAll(c => c.Group == group).OfType<T>().ToList();
+        }
     }
 }

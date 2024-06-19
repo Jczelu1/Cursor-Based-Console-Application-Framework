@@ -158,21 +158,6 @@ namespace cbcaf.Page
                 i++;
             }
         }
-        public T? GetContentById<T>(string id) where T : class, IContent
-        {
-            return Body.Contents.Find(c => c is T t && c.Id == id) as T;
-        }
-        public List<T> GetAllContentsById<T>(string id) where T : class, IContent
-        {
-            return Body.Contents.FindAll(c => c.Id == id).OfType<T>().ToList();
-        }
-        public T? GetFirstContentByGroup<T>(char group) where T : class, IContent
-        {
-            return Body.Contents.Find(c => c is T t && c.Group == group) as T;
-        }
-        public List<T> GetContentsByGroup<T>(char group) where T : class, IContent
-        {
-            return Body.Contents.FindAll(c => c.Group == group).OfType<T>().ToList();
-        }
+        
     }
 }

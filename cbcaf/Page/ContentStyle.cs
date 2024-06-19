@@ -100,4 +100,10 @@ namespace cbcaf.Page
         BG_BrightCyan = 106,
         BG_BrightWhite = 107
     }
+    public enum Align
+    {
+        Right,
+        Left,
+        Center
+    }
 }
