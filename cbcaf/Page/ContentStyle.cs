@@ -6,7 +6,7 @@ using System.Threading.Tasks;
 
 namespace cbcaf.Page
 {
-    public class ContentStyle
+    public static class ContentStyle
     {
         public static string Cursor { private get; set; } = ">";
 

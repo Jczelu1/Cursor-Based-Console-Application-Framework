@@ -137,7 +137,7 @@ namespace cbcaf.Page
         }
         public void Display()
         {
-            Console.SetCursorPosition(0,0);
+            WindowSize.WindowSizeCheck();
             ContentStyle.ApplyBaseStyles(PageStyles);
             Console.Clear();
 
