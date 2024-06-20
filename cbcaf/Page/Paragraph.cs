@@ -8,11 +8,16 @@ namespace cbcaf.Page
 {
     public class Paragraph : PlainText
     {
-        public List<Style> styles = new List<Style>();
+        public List<Style> TextStyles = new List<Style>();
+        public List<Style> SelectedTextStyles = new List<Style>();
 
+        public override void PrintContent()
+        {
+            Console.WriteLine(ContentStyle.StyleContentText(Text, TextStyles));
+        }
         public override void PrintContentSelected()
         {
-            Console.WriteLine(ContentStyle.GetCursor() + ContentStyle.StyleText(Text, styles));
+            Console.WriteLine(ContentStyle.GetCursor() + ContentStyle.StyleContentText(Text, SelectedTextStyles));
         }
     }
 }

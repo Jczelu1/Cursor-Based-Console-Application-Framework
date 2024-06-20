@@ -12,11 +12,11 @@ namespace cbcaf.Page
 
         public static List<Style> CursorStyles = new List<Style>();
 
-        public static List<Style> PreviousStyles = new List<Style>();
+        public static List<Style> BaseStyles = new List<Style>();
 
         public static string GetCursor()
         {
-            return StyleText(Cursor, CursorStyles);
+            return StyleContentText(Cursor, CursorStyles);
         }
 
         public static string GetStyleString(Style style)
@@ -29,30 +29,40 @@ namespace cbcaf.Page
             string formatCodes = string.Join(";", styles.ConvertAll(style => ((int)style).ToString()));
             return $"\u001b[{formatCodes}m";
         }
-        public static void ApplyStyle(Style style)
+        internal static void ApplyBaseStyle(Style style)
         {
             Console.Write(GetStyleString(style));
-            PreviousStyles = new List<Style>() { style };
+            BaseStyles = new List<Style>() { style };
         }
-        public static void ApplyStyles(List<Style> styles)
+        internal static void ApplyBaseStyles(List<Style> styles)
         {
             Console.Write(GetStyleString(styles));
-            PreviousStyles = styles;
+            BaseStyles = styles;
         }
-        public static void ApplyPreviousStyles()
+        internal static void ResetToBaseStyles()
         {
-            ApplyStyles(PreviousStyles);
+            ApplyBaseStyles(BaseStyles);
         }
         
+        internal static string StyleContentText(string text, List<Style> styles)
+        {
+            if (styles.Count() == 0) text.Replace("\u001b[&m", GetStyleString(BaseStyles));
+            else text.Replace("\u001b[&m", GetStyleString(styles));
+            return $"{GetStyleString(styles)}{text}\u001b[0m{GetStyleString(BaseStyles)}";
+        }
+        internal static string StyleContentText(string text)
+        {
+            text = text.Replace("\u001b[&m", GetStyleString(BaseStyles));
+            return text;
+        }
         public static string StyleText(string text, Style style)
         {
-            return $"{GetStyleString(style)}{text}\u001b[0m{GetStyleString(PreviousStyles)}";
+            return $"{GetStyleString(style)}{text}\u001b[0m\u001b[&m";
         }
         public static string StyleText(string text, List<Style> styles)
         {
-            return $"{GetStyleString(styles)}{text}\u001b[0m{GetStyleString(PreviousStyles)}";
+            return $"{GetStyleString(styles)}{text}\u001b[0m\u001b[&m";
         }
-
     }
     public enum Style
     {

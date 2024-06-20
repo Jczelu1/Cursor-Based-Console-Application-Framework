@@ -24,12 +24,12 @@ namespace cbcaf.Page
 
         public virtual void PrintContent()
         {
-            Console.WriteLine(Text);
+            Console.WriteLine(ContentStyle.StyleContentText(Text));
         }
 
         public virtual void PrintContentSelected()
         {
-            Console.WriteLine(ContentStyle.GetCursor() + Text);
+            Console.WriteLine(ContentStyle.GetCursor() + ContentStyle.StyleContentText(Text));
         }
     }
     public class PlainTextButton : PlainText, IExecutable
