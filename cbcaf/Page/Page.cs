@@ -16,6 +16,8 @@ namespace cbcaf.Page
         public Procedure? OnClose;
         public Procedure? OnDisplay;
 
+        public List<Style> PageStyles = new List<Style>();
+
 
         public int Cursor { get; private set; }
 
@@ -135,7 +137,8 @@ namespace cbcaf.Page
         }
         public void Display()
         {
-            Console.SetCursorPosition(0,0);
+            WindowSize.WindowSizeCheck();
+            ContentStyle.ApplyBaseStyles(PageStyles);
             Console.Clear();
 
             OnDisplay?.Invoke();

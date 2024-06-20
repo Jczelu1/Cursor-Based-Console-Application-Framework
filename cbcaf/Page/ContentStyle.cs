@@ -6,26 +6,19 @@ using System.Threading.Tasks;
 
 namespace cbcaf.Page
 {
-    public class ContentStyle
+    public static class ContentStyle
     {
         public static string Cursor { private get; set; } = ">";
 
         public static List<Style> CursorStyles = new List<Style>();
 
-        public static List<Style> DefaultStyles  = new List<Style>();
+        public static List<Style> BaseStyles = new List<Style>();
 
         public static string GetCursor()
         {
-            return StyleText(Cursor, CursorStyles);
+            return StyleContentText(Cursor, CursorStyles);
         }
-        public static void ApplyStyle(Style style)
-        {
-            Console.Write(GetStyleString(style));
-        }
-        public static void ApplyStyles(List<Style> styles)
-        {
-            Console.Write(GetStyleString(styles));
-        }
+
         public static string GetStyleString(Style style)
         {
             return $"\u001b[{(int)style}m";
@@ -36,19 +29,40 @@ namespace cbcaf.Page
             string formatCodes = string.Join(";", styles.ConvertAll(style => ((int)style).ToString()));
             return $"\u001b[{formatCodes}m";
         }
-        public static void SetStylesToDefault()
+        internal static void ApplyBaseStyle(Style style)
         {
-            ApplyStyles(DefaultStyles);
+            Console.Write(GetStyleString(style));
+            BaseStyles = new List<Style>() { style };
+        }
+        internal static void ApplyBaseStyles(List<Style> styles)
+        {
+            Console.Write(GetStyleString(styles));
+            BaseStyles = styles;
+        }
+        internal static void ResetToBaseStyles()
+        {
+            ApplyBaseStyles(BaseStyles);
+        }
+        
+        internal static string StyleContentText(string text, List<Style> styles)
+        {
+            if (styles.Count() == 0) text.Replace("\u001b[&m", GetStyleString(BaseStyles));
+            else text.Replace("\u001b[&m", GetStyleString(styles));
+            return $"{GetStyleString(styles)}{text}\u001b[0m{GetStyleString(BaseStyles)}";
+        }
+        internal static string StyleContentText(string text)
+        {
+            text = text.Replace("\u001b[&m", GetStyleString(BaseStyles));
+            return text;
         }
         public static string StyleText(string text, Style style)
         {
-            return $"{GetStyleString(style)}{text}\u001b[0m{GetStyleString(DefaultStyles)}";
+            return $"{GetStyleString(style)}{text}\u001b[0m\u001b[&m";
         }
         public static string StyleText(string text, List<Style> styles)
         {
-            return $"{GetStyleString(styles)}{text}\u001b[0m{GetStyleString(DefaultStyles)}";
+            return $"{GetStyleString(styles)}{text}\u001b[0m\u001b[&m";
         }
-
     }
     public enum Style
     {

@@ -22,14 +22,14 @@ namespace cbcaf.Page
             IsSelectable = isSelectable;
         }
 
-        public void PrintContent()
+        public virtual void PrintContent()
         {
-            Console.WriteLine(Text);
+            Console.WriteLine(ContentStyle.StyleContentText(Text));
         }
 
-        public void PrintContentSelected()
+        public virtual void PrintContentSelected()
         {
-            Console.WriteLine(ContentStyle.GetCursor() + Text);
+            Console.WriteLine(ContentStyle.GetCursor() + ContentStyle.StyleContentText(Text));
         }
     }
     public class PlainTextButton : PlainText, IExecutable
