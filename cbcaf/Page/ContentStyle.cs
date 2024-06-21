@@ -12,7 +12,7 @@ namespace cbcaf.Page
 
         public static List<Style> CursorStyles = new List<Style>();
 
-        public static List<Style> BaseStyles = new List<Style>();
+        internal static List<Style> BaseStyles = new List<Style>();
 
         public static string GetCursor()
         {

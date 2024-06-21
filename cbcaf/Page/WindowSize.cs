@@ -15,6 +15,9 @@ namespace cbcaf.Page
         public static int? MaxWidth { get; set; } = null;
         public static int? MaxHeight { get; set; } = null;
 
+        public static int CurrentWidth { get; set; } = 0;
+        public static int CurrentHeight { get; set; } = 0;
+
         internal static void WindowSizeCheck()
         {
             int newWidth = Console.WindowWidth;
@@ -42,6 +45,8 @@ namespace cbcaf.Page
             {
                 Console.SetWindowSize(newWidth, newHeight);
             }
+            CurrentWidth = newWidth;
+            CurrentHeight = newHeight;
         }
     }
 }

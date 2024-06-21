@@ -8,6 +8,7 @@ namespace cbcaf.Page
 {
     public class Page
     {
+        public static List<Style> DefaultPageStyles { get; set; } = [];
         public string? Id;
         public char? Group;
         public List<IContent> Contents = [];
@@ -16,20 +17,11 @@ namespace cbcaf.Page
         public Procedure? OnClose;
         public Procedure? OnDisplay;
 
-        public List<Style> PageStyles = new List<Style>();
+        public List<Style> PageStyles = DefaultPageStyles;
 
 
         public int Cursor { get; private set; }
 
-        public Page(List<IContent> contents, string? id = null, char? group = null, Procedure? onOpen = null, Procedure? onClose = null, Procedure? onDisplay = null)
-        {
-            Contents = contents;
-            Id = id;
-            Group = group;
-            OnOpen = onOpen;
-            OnClose = onClose;
-            OnDisplay = onDisplay;
-        }
         public Page(string? id = null, char? group = null, Procedure? onOpen = null, Procedure? onClose = null, Procedure? onDisplay = null) 
         {
             Id = id;
@@ -37,6 +29,18 @@ namespace cbcaf.Page
             OnOpen = onOpen;
             OnClose = onClose;
             OnDisplay = onDisplay;
+        }
+        public Page(List<IContent> contents, string? id = null, char? group = null, Procedure? onOpen = null, Procedure? onClose = null, Procedure? onDisplay = null) : this(id, group, onOpen, onClose, onDisplay)
+        {
+            Contents = contents;
+        }
+        public Page(List<IContent> contents, List<Style> pageStyles, string? id = null, char? group = null, Procedure? onOpen = null, Procedure? onClose = null, Procedure? onDisplay = null) : this(contents, id, group, onOpen, onClose, onDisplay)
+        {
+            PageStyles = pageStyles;
+        }
+        public Page(List<Style> pageStyles, string? id = null, char? group = null, Procedure? onOpen = null, Procedure? onClose = null, Procedure? onDisplay = null) : this(id, group, onOpen, onClose, onDisplay)
+        {
+            PageStyles = pageStyles;
         }
 
         public int DefaultCursor()
