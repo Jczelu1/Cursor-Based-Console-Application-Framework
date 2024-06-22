@@ -11,19 +11,65 @@ namespace cbcaf.Page
     {
         private static readonly Regex AnsiEscapeRegex = new Regex(@"\x1B\[[0-9;]*[mGKHF]", RegexOptions.Compiled);
 
-        public static string GetSubstringWithoutAnsi(string text, int desiredLength)
+        public static string CleanText(string text)
         {
-            if (string.IsNullOrEmpty(text) || desiredLength <= 0)
+            if (string.IsNullOrEmpty(text))
                 return string.Empty;
 
             // Remove ANSI escape sequences
-            string cleanedText = AnsiEscapeRegex.Replace(text, string.Empty);
+            return AnsiEscapeRegex.Replace(text, string.Empty);
+        }
+        public static string GetSubstringWithoutAnsi(string text, int length)
+        {
+            if (string.IsNullOrEmpty(text) || length <= 0)
+                return string.Empty;
+
+            // Remove ANSI escape sequences
+            string cleanedText = CleanText(text);
 
             // Get the substring of the desired length from the cleaned text
-            string substring = cleanedText.Length > desiredLength ? cleanedText.Substring(0, desiredLength) : cleanedText;
+            string substring = cleanedText.Length > length ? cleanedText.Substring(0, length) : cleanedText;
 
             // Reinsert ANSI escape sequences into the substring
             return ReinsertAnsiSequences(text, substring) + "\u001b[0m\u001b[999m";
+        }
+        public static List<string> WrapText(string text, int length)
+        {
+            if (string.IsNullOrEmpty(text) || length <= 0)
+                return new List<string> { string.Empty };
+
+            string cleanedText = CleanText(text);
+            List<string> lines = new List<string>();
+            int start = 0;
+
+            while (start < cleanedText.Length)
+            {
+                int end = Math.Min(start + length, cleanedText.Length);
+
+                // Find the last space within the current segment to break the line
+                if (end < cleanedText.Length && cleanedText[end] != ' ')
+                {
+                    int lastSpace = cleanedText.LastIndexOf(' ', end - 1, end - start);
+                    if (lastSpace > start)
+                    {
+                        end = lastSpace;
+                    }
+                }
+
+                string segment = cleanedText.Substring(start, end - start).TrimEnd();
+                string formattedSegment = ReinsertAnsiSequences(text, segment);
+                lines.Add(formattedSegment);
+
+                start = end;
+
+                // Skip spaces at the beginning of the next line
+                while (start < cleanedText.Length && cleanedText[start] == ' ')
+                {
+                    start++;
+                }
+            }
+
+            return lines;
         }
 
         private static string ReinsertAnsiSequences(string original, string cleanedSubstring)
