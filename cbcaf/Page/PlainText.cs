@@ -22,14 +22,20 @@ namespace cbcaf.Page
             IsSelectable = isSelectable;
         }
 
-        public virtual void PrintContent()
+        public virtual void PrintContent(int width, int leftOffset)
         {
-            Console.WriteLine(ContentStyle.StyleContentText(Text));
+            width-=leftOffset;
+            string pText = ContentStyle.GetSubstringWithoutAnsi(Text,width);
+            Console.SetCursorPosition(leftOffset, Console.CursorTop);
+            Console.WriteLine(ContentStyle.StyleContentText(pText));
         }
 
-        public virtual void PrintContentSelected()
+        public virtual void PrintContentSelected(int width, int leftOffset)
         {
-            Console.WriteLine(ContentStyle.GetCursor() + ContentStyle.StyleContentText(Text));
+            width -= leftOffset;
+            string pText = ContentStyle.GetSubstringWithoutAnsi(ContentStyle.GetCursor()+Text, width);
+            Console.SetCursorPosition(leftOffset, Console.CursorTop);
+            Console.WriteLine(ContentStyle.StyleContentText(pText));
         }
     }
     public class PlainTextButton : PlainText, IExecutable

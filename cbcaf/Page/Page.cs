@@ -156,11 +156,11 @@ namespace cbcaf.Page
             {
                 if(Cursor == i && c is ISelectable s)
                 {
-                    s.PrintContentSelected();
+                    s.PrintContentSelected(WindowSize.CurrentWidth, 1);
                 }
                 else if(c is IPrintable p)
                 {
-                    p.PrintContent();
+                    p.PrintContent(WindowSize.CurrentWidth, 1);
                 }
                 i++;
             }

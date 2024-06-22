@@ -20,11 +20,11 @@ namespace cbcaf.Page
             TextStyles = textStyles;
             SelectedTextStyles = selectedTextStyles;
         }
-        public override void PrintContent()
+        public override void PrintContent(int width, int leftOffset)
         {
             Console.WriteLine(ContentStyle.StyleContentText(Text, TextStyles));
         }
-        public override void PrintContentSelected()
+        public override void PrintContentSelected(int width, int leftOffset)
         {
             Console.WriteLine(ContentStyle.GetCursor() + ContentStyle.StyleContentText(Text, SelectedTextStyles));
         }

@@ -12,12 +12,12 @@ namespace cbcaf.Page
     }
     public interface IPrintable : IContent
     {
-        public void PrintContent();
+        public void PrintContent(int width, int leftOffset);
     }
     public interface ISelectable : IPrintable
     {
         public bool IsSelectable { get; set; }
-        public void PrintContentSelected();
+        public void PrintContentSelected(int width, int leftOffset);
     }
     public interface IExecutable : ISelectable
     {

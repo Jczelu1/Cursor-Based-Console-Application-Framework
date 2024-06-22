@@ -2,13 +2,69 @@
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
+using System.Text.RegularExpressions;
 using System.Threading.Tasks;
 
 namespace cbcaf.Page
 {
     public static class ContentStyle
     {
-        public static string Cursor { private get; set; } = ">";
+        private static readonly Regex AnsiEscapeRegex = new Regex(@"\x1B\[[0-9;]*[mGKHF]", RegexOptions.Compiled);
+
+        public static string GetSubstringWithoutAnsi(string text, int desiredLength)
+        {
+            if (string.IsNullOrEmpty(text) || desiredLength <= 0)
+                return string.Empty;
+
+            // Remove ANSI escape sequences
+            string cleanedText = AnsiEscapeRegex.Replace(text, string.Empty);
+
+            // Get the substring of the desired length from the cleaned text
+            string substring = cleanedText.Length > desiredLength ? cleanedText.Substring(0, desiredLength) : cleanedText;
+
+            // Reinsert ANSI escape sequences into the substring
+            return ReinsertAnsiSequences(text, substring) + "\u001b[0m\u001b[999m";
+        }
+
+        private static string ReinsertAnsiSequences(string original, string cleanedSubstring)
+        {
+            StringBuilder result = new StringBuilder();
+            int cleanedIndex = 0;
+            bool inEscapeSequence = false;
+
+            foreach (char c in original)
+            {
+                if (c == '\x1B')
+                {
+                    inEscapeSequence = true;
+                    result.Append(c);
+                }
+                else if (inEscapeSequence)
+                {
+                    result.Append(c);
+                    if (c == 'm' || c == 'G' || c == 'K' || c == 'H' || c == 'F')
+                    {
+                        inEscapeSequence = false;
+                    }
+                }
+                else
+                {
+                    if (cleanedIndex < cleanedSubstring.Length && cleanedSubstring[cleanedIndex] == c)
+                    {
+                        result.Append(c);
+                        cleanedIndex++;
+                    }
+                    else if (cleanedIndex >= cleanedSubstring.Length)
+                    {
+                        break;
+                    }
+                }
+            }
+
+            return result.ToString();
+        }
+
+    public static string Cursor { private get; set; } = ">";
 
         public static List<Style> CursorStyles = new List<Style>();
 
@@ -46,22 +102,22 @@ namespace cbcaf.Page
         
         internal static string StyleContentText(string text, List<Style> styles)
         {
-            if (styles.Count() == 0) text.Replace("\u001b[&m", GetStyleString(BaseStyles));
-            else text.Replace("\u001b[&m", GetStyleString(styles));
+            if (styles.Count() == 0) text.Replace("\u001b[999m", GetStyleString(BaseStyles));
+            else text.Replace("\u001b[999m", GetStyleString(styles));
             return $"{GetStyleString(styles)}{text}\u001b[0m{GetStyleString(BaseStyles)}";
         }
         internal static string StyleContentText(string text)
         {
-            text = text.Replace("\u001b[&m", GetStyleString(BaseStyles));
+            text = text.Replace("\u001b[999m", GetStyleString(BaseStyles));
             return text;
         }
         public static string StyleText(string text, Style style)
         {
-            return $"{GetStyleString(style)}{text}\u001b[0m\u001b[&m";
+            return $"{GetStyleString(style)}{text}\u001b[0m\u001b[999m";
         }
         public static string StyleText(string text, List<Style> styles)
         {
-            return $"{GetStyleString(styles)}{text}\u001b[0m\u001b[&m";
+            return $"{GetStyleString(styles)}{text}\u001b[0m\u001b[999m";
         }
     }
     public enum Style
