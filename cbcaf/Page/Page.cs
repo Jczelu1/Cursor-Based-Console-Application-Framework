@@ -17,30 +17,25 @@ namespace cbcaf.Page
         public Procedure? OnClose;
         public Procedure? OnDisplay;
 
+        public int MarginLeft;
+        public int MarginRight;
+        public int MarginTop;
+        //public int MarginBottom;
         public List<Style> PageStyles = DefaultPageStyles;
 
 
         public int Cursor { get; private set; }
 
-        public Page(string? id = null, char? group = null, Procedure? onOpen = null, Procedure? onClose = null, Procedure? onDisplay = null) 
+        public Page(string? id = null, char? group = null, Procedure? onOpen = null, Procedure? onClose = null, Procedure? onDisplay = null, int marginLeft = 0, int marginRight = 0, int marginTop = 0) 
         {
             Id = id;
             Group = group;
             OnOpen = onOpen;
             OnClose = onClose;
             OnDisplay = onDisplay;
-        }
-        public Page(List<IContent> contents, string? id = null, char? group = null, Procedure? onOpen = null, Procedure? onClose = null, Procedure? onDisplay = null) : this(id, group, onOpen, onClose, onDisplay)
-        {
-            Contents = contents;
-        }
-        public Page(List<IContent> contents, List<Style> pageStyles, string? id = null, char? group = null, Procedure? onOpen = null, Procedure? onClose = null, Procedure? onDisplay = null) : this(contents, id, group, onOpen, onClose, onDisplay)
-        {
-            PageStyles = pageStyles;
-        }
-        public Page(List<Style> pageStyles, string? id = null, char? group = null, Procedure? onOpen = null, Procedure? onClose = null, Procedure? onDisplay = null) : this(id, group, onOpen, onClose, onDisplay)
-        {
-            PageStyles = pageStyles;
+            MarginLeft = marginLeft;
+            MarginRight = marginRight;
+            MarginTop = marginTop;
         }
 
         public int DefaultCursor()
@@ -152,15 +147,20 @@ namespace cbcaf.Page
         public void DisplayContents()
         {
             int i = 0;
+            for (i=0; i < MarginTop; i++)
+            {
+                Console.WriteLine();
+            }
+            i = 0;
             foreach (IContent c in Contents)
             {
                 if(Cursor == i && c is ISelectable s)
                 {
-                    s.PrintContentSelected(WindowSize.CurrentWidth, 1);
+                    s.PrintContentSelected(WindowSize.CurrentWidth - MarginRight, MarginLeft);
                 }
                 else if(c is IPrintable p)
                 {
-                    p.PrintContent(WindowSize.CurrentWidth, 1);
+                    p.PrintContent(WindowSize.CurrentWidth - MarginRight, MarginLeft);
                 }
                 i++;
             }

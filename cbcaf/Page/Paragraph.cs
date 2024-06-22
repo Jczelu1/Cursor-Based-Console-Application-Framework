@@ -14,19 +14,47 @@ namespace cbcaf.Page
         public List<Style> TextStyles = DefaultParagraphStyles;
         public List<Style> SelectedTextStyles = DefaultSelectedParagraphStyles;
 
-        public Paragraph(string text = "", string? id = null, char? group = null, bool isSelectable = true) : base(text, id, group, isSelectable) { }
-        public Paragraph(List<Style> textStyles, List<Style> selectedTextStyles, string text = "", string? id = null, char? group = null, bool isSelectable = true) : base(text, id, group, isSelectable) 
+        public int MarginTop { get; set; }
+        public int MarginBottom { get; set; }
+        public int MarginLeft { get; set; }
+        public int MarginRight { get; set; }
+
+        public Paragraph(string text = "", string? id = null, char? group = null, bool isSelectable = true, int marginTop = 0, int marginBottom = 0, int marginLeft = 0, int marginRight = 0) : base(text, id, group, isSelectable) 
         {
-            TextStyles = textStyles;
-            SelectedTextStyles = selectedTextStyles;
+            MarginTop = marginTop;
+            MarginBottom = marginBottom;
+            MarginLeft = marginLeft;
+            MarginRight = marginRight;
         }
         public override void PrintContent(int width, int leftOffset)
         {
-            Console.WriteLine(ContentStyle.StyleContentText(Text, TextStyles));
+            for (int i = 0; i < MarginTop; i++)
+            {
+                Console.WriteLine();
+            }
+            width -= leftOffset;
+            string pText = ContentStyle.GetSubstringWithoutAnsi(Text, width-MarginRight);
+            Console.SetCursorPosition(leftOffset+MarginLeft, Console.CursorTop);
+            Console.WriteLine(ContentStyle.StyleContentText(pText));
+            for (int i = 0; i < MarginBottom; i++)
+            {
+                Console.WriteLine();
+            }
         }
         public override void PrintContentSelected(int width, int leftOffset)
         {
-            Console.WriteLine(ContentStyle.GetCursor() + ContentStyle.StyleContentText(Text, SelectedTextStyles));
+            for (int i = 0; i < MarginTop; i++)
+            {
+                Console.WriteLine();
+            }
+            width -= leftOffset;
+            string pText = ContentStyle.GetSubstringWithoutAnsi(ContentStyle.GetCursor()+Text, width - MarginRight);
+            Console.SetCursorPosition(leftOffset + MarginLeft, Console.CursorTop);
+            Console.WriteLine(ContentStyle.StyleContentText(pText));
+            for (int i = 0; i < MarginBottom; i++)
+            {
+                Console.WriteLine();
+            }
         }
     }
 }
