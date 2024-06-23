@@ -19,6 +19,8 @@ namespace cbcaf.Page
         public int MarginLeft { get; set; }
         public int MarginRight { get; set; }
 
+        public LongText LongText {  get; set; }
+
         public Paragraph(string text = "", string? id = null, char? group = null, bool isSelectable = true, int marginTop = 0, int marginBottom = 0, int marginLeft = 0, int marginRight = 0) : base(text, id, group, isSelectable) 
         {
             MarginTop = marginTop;

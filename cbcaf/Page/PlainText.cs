@@ -25,7 +25,7 @@ namespace cbcaf.Page
         public virtual void PrintContent(int width, int leftOffset)
         {
             width -= leftOffset;
-            List<string> pText = LongTextUtil.Truncate(Text, width);
+            List<string> pText = LongTextUtil.Cut(Text, width);
             Console.SetCursorPosition(leftOffset, Console.CursorTop);
             foreach (string line in pText)
             {
@@ -37,7 +37,7 @@ namespace cbcaf.Page
         public virtual void PrintContentSelected(int width, int leftOffset)
         {
             width -= leftOffset;
-            List<string> pText = LongTextUtil.Truncate(Cursor.CursorString+Text, width);
+            List<string> pText = LongTextUtil.Cut(Cursor.CursorString+Text, width);
             Console.SetCursorPosition(leftOffset, Console.CursorTop);
             foreach (string line in pText)
             {

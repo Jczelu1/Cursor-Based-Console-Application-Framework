@@ -34,18 +34,19 @@ namespace cbcaf.Page
                 // Get the current line segment
                 string lineSegment = text.Substring(startIndex, newlineIndex - startIndex).Trim();
 
-                // Cut the line segment to the specified width and add to the list
-                while (lineSegment.Length > width)
+                // Trim end whitespace only
+                lineSegment = lineSegment.TrimEnd();
+
+                if (lineSegment.Length > width)
                 {
                     lines.Add(lineSegment.Substring(0, width));
-                    lineSegment = lineSegment.Substring(width).Trim();
                 }
-
-                // Add any remaining part of the line segment
-                if (lineSegment.Length > 0)
+                else
                 {
                     lines.Add(lineSegment);
                 }
+
+                // Add any remaining part of the line segment
 
                 // Move to the start of the next line
                 startIndex = newlineIndex + 1;
@@ -70,17 +71,17 @@ namespace cbcaf.Page
                 }
 
                 // Get the current line segment
-                string lineSegment = text.Substring(startIndex, newlineIndex - startIndex).Trim();
+                string lineSegment = text.Substring(startIndex, newlineIndex - startIndex);
+
+                // Trim end whitespace only
+                lineSegment = lineSegment.TrimEnd();
 
                 // Cut the line segment to the specified width and add to the list
-                while (lineSegment.Length > width-3)
+                if (lineSegment.Length > width)
                 {
-                    lines.Add(lineSegment.Substring(0, width-3) + "...");
-                    lineSegment = lineSegment.Substring(width).Trim();
+                    lines.Add(lineSegment.Substring(0, width - 3) + "...");
                 }
-
-                // Add any remaining part of the line segment
-                if (lineSegment.Length > 0)
+                else
                 {
                     lines.Add(lineSegment);
                 }
