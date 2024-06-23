@@ -7,6 +7,7 @@ using System.Threading.Tasks;
 
 namespace cbcaf.Page
 {
+    /*
     public static class ContentStyle
     {
         private static readonly Regex AnsiEscapeRegex = new Regex(@"\x1B\[[0-9;]*[mGKHF]", RegexOptions.Compiled);
@@ -46,13 +47,22 @@ namespace cbcaf.Page
             {
                 int end = Math.Min(start + length, cleanedText.Length);
 
-                // Find the last space within the current segment to break the line
-                if (end < cleanedText.Length && cleanedText[end] != ' ')
+                // Find the last newline within the current segment to break the line
+                int newlineIndex = cleanedText.IndexOf('\n', start, end - start);
+                if (newlineIndex != -1)
                 {
-                    int lastSpace = cleanedText.LastIndexOf(' ', end - 1, end - start);
-                    if (lastSpace > start)
+                    end = newlineIndex;
+                }
+                else
+                {
+                    // Find the last space within the current segment to break the line
+                    if (end < cleanedText.Length && cleanedText[end] != ' ')
                     {
-                        end = lastSpace;
+                        int lastSpace = cleanedText.LastIndexOf(' ', end - 1, end - start);
+                        if (lastSpace > start)
+                        {
+                            end = lastSpace;
+                        }
                     }
                 }
 
@@ -62,8 +72,8 @@ namespace cbcaf.Page
 
                 start = end;
 
-                // Skip spaces at the beginning of the next line
-                while (start < cleanedText.Length && cleanedText[start] == ' ')
+                // Skip newline or spaces at the beginning of the next line
+                while (start < cleanedText.Length && (cleanedText[start] == ' ' || cleanedText[start] == '\n'))
                 {
                     start++;
                 }
@@ -71,6 +81,7 @@ namespace cbcaf.Page
 
             return lines;
         }
+
 
         private static string ReinsertAnsiSequences(string original, string cleanedSubstring)
         {
@@ -215,5 +226,5 @@ namespace cbcaf.Page
         BG_BrightMagenta = 105,
         BG_BrightCyan = 106,
         BG_BrightWhite = 107
-    }
+    }*/
 }

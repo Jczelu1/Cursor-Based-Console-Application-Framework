@@ -8,7 +8,7 @@ namespace cbcaf.Page
 {
     public class Page
     {
-        public static List<Style> DefaultPageStyles { get; set; } = [];
+       // public static List<Style> DefaultPageStyles { get; set; } = [];
         public string? Id;
         public char? Group;
         public List<IContent> Contents = [];
@@ -21,7 +21,8 @@ namespace cbcaf.Page
         public int MarginRight;
         public int MarginTop;
         //public int MarginBottom;
-        public List<Style> PageStyles = DefaultPageStyles;
+
+        //public List<Style> PageStyles = DefaultPageStyles;
 
 
         public int Cursor { get; private set; }
@@ -137,7 +138,7 @@ namespace cbcaf.Page
         public void Display()
         {
             WindowSize.WindowSizeCheck();
-            ContentStyle.ApplyBaseStyles(PageStyles);
+            //ContentStyle.ApplyBaseStyles(PageStyles);
             Console.Clear();
 
             OnDisplay?.Invoke();
@@ -147,10 +148,7 @@ namespace cbcaf.Page
         public void DisplayContents()
         {
             int i = 0;
-            for (i=0; i < MarginTop; i++)
-            {
-                Console.WriteLine();
-            }
+            Console.Write(new string('\n', MarginTop));
             i = 0;
             foreach (IContent c in Contents)
             {

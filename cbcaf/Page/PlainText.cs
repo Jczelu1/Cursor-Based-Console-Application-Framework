@@ -24,18 +24,26 @@ namespace cbcaf.Page
 
         public virtual void PrintContent(int width, int leftOffset)
         {
-            width-=leftOffset;
-            string pText = ContentStyle.GetSubstringWithoutAnsi(Text,width);
+            width -= leftOffset;
+            List<string> pText = LongTextUtil.Truncate(Text, width);
             Console.SetCursorPosition(leftOffset, Console.CursorTop);
-            Console.WriteLine(ContentStyle.StyleContentText(pText));
+            foreach (string line in pText)
+            {
+                Console.SetCursorPosition(leftOffset, Console.CursorTop);
+                Console.WriteLine(line);
+            }
         }
 
         public virtual void PrintContentSelected(int width, int leftOffset)
         {
             width -= leftOffset;
-            string pText = ContentStyle.GetSubstringWithoutAnsi(ContentStyle.GetCursor()+Text, width);
+            List<string> pText = LongTextUtil.Truncate(Cursor.CursorString+Text, width);
             Console.SetCursorPosition(leftOffset, Console.CursorTop);
-            Console.WriteLine(ContentStyle.StyleContentText(pText));
+            foreach (string line in pText)
+            {
+                Console.SetCursorPosition(leftOffset, Console.CursorTop);
+                Console.WriteLine(line);
+            }
         }
     }
     public class PlainTextButton : PlainText, IExecutable

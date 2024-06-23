@@ -8,11 +8,11 @@ namespace cbcaf.Page
 {
     public class Paragraph : PlainText
     {
-        public static List<Style> DefaultParagraphStyles { get; set; } = [];
-        public static List<Style> DefaultSelectedParagraphStyles { get; set; } = [];
+        //public static List<Style> DefaultParagraphStyles { get; set; } = [];
+        //public static List<Style>? DefaultSelectedParagraphStyles { get; set; } = null;
 
-        public List<Style> TextStyles = DefaultParagraphStyles;
-        public List<Style> SelectedTextStyles = DefaultSelectedParagraphStyles;
+        //public List<Style> TextStyles = DefaultParagraphStyles;
+        //public List<Style>? SelectedTextStyles = DefaultSelectedParagraphStyles;
 
         public int MarginTop { get; set; }
         public int MarginBottom { get; set; }
@@ -28,33 +28,33 @@ namespace cbcaf.Page
         }
         public override void PrintContent(int width, int leftOffset)
         {
-            for (int i = 0; i < MarginTop; i++)
-            {
-                Console.WriteLine();
-            }
+            Console.Write(new string('\n', MarginTop));
+
             width -= leftOffset;
-            string pText = ContentStyle.GetSubstringWithoutAnsi(Text, width-MarginRight);
+            List<string> pText = LongTextUtil.Wrap(Text, width-MarginRight);
             Console.SetCursorPosition(leftOffset+MarginLeft, Console.CursorTop);
-            Console.WriteLine(ContentStyle.StyleContentText(pText));
-            for (int i = 0; i < MarginBottom; i++)
+            foreach (string line in pText)
             {
-                Console.WriteLine();
+                Console.SetCursorPosition(leftOffset + MarginLeft, Console.CursorTop);
+                Console.WriteLine(line);
             }
+
+            Console.Write(new string('\n', MarginBottom));
         }
         public override void PrintContentSelected(int width, int leftOffset)
         {
-            for (int i = 0; i < MarginTop; i++)
-            {
-                Console.WriteLine();
-            }
+            Console.Write(new string('\n', MarginTop));
+
             width -= leftOffset;
-            string pText = ContentStyle.GetSubstringWithoutAnsi(ContentStyle.GetCursor()+Text, width - MarginRight);
+            List<string> pText = LongTextUtil.Wrap(Cursor.CursorString+Text, width - MarginRight);
             Console.SetCursorPosition(leftOffset + MarginLeft, Console.CursorTop);
-            Console.WriteLine(ContentStyle.StyleContentText(pText));
-            for (int i = 0; i < MarginBottom; i++)
+            foreach (string line in pText)
             {
-                Console.WriteLine();
+                Console.SetCursorPosition(leftOffset + MarginLeft, Console.CursorTop);
+                Console.WriteLine(line);
             }
+
+            Console.Write(new string('\n', MarginBottom));
         }
     }
 }
