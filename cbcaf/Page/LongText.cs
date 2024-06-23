@@ -79,7 +79,7 @@ namespace cbcaf.Page
                 // Cut the line segment to the specified width and add to the list
                 if (lineSegment.Length > width)
                 {
-                    lines.Add(lineSegment.Substring(0, width - 3) + "...");
+                    lines.Add(lineSegment.Substring(0, width - 3).TrimEnd() + "...");
                 }
                 else
                 {
@@ -95,41 +95,47 @@ namespace cbcaf.Page
         public static List<string> FixedWrap(string text, int width)
         {
             List<string> wrappedLines = new List<string>();
-            int startIndex = 0;
+            string[] paragraphs = text.Split('\n');
 
-            while (startIndex < text.Length)
+            foreach (string paragraph in paragraphs)
             {
-                // Find the next newline character
-                int newlineIndex = text.IndexOf('\n', startIndex);
+                int startIndex = 0;
 
-                // Determine the end index of the current segment
-                int endIndex = Math.Min(startIndex + width, text.Length);
-
-                // If a newline is found and it's within the current segment width
-                if (newlineIndex != -1 && newlineIndex < endIndex)
+                while (startIndex < paragraph.Length)
                 {
-                    endIndex = newlineIndex;
+                    // Determine the maximum length of the current segment
+                    int endIndex = Math.Min(startIndex + width, paragraph.Length);
+
+                    // Extract the line segment and trim any leading or trailing whitespace
+                    string lineSegment = paragraph.Substring(startIndex, endIndex - startIndex).Trim();
+
+                    // Add the line segment to the list
+                    wrappedLines.Add(lineSegment);
+
+                    // Move to the start of the next segment
+                    startIndex = endIndex;
+
+                    // Skip the wrap character and any additional spaces after the line break
+                    while (startIndex < paragraph.Length && (paragraph[startIndex] == ' '))
+                    {
+                        startIndex++;
+                    }
                 }
 
-                // Extract the line segment
-                string lineSegment = text.Substring(startIndex, endIndex - startIndex);
-
-                // Add the line segment to the list
-                wrappedLines.Add(lineSegment);
-
-                // Move to the start of the next segment
-                startIndex = endIndex;
-
-                // If the current segment ended with a newline, skip it
-                if (startIndex < text.Length && text[startIndex] == '\n')
-                {
-                    startIndex++;
-                }
+                // Add an empty line to maintain the paragraph break
+                //wrappedLines.Add(string.Empty);
             }
+
+            // Remove the last empty line added
+            //if (wrappedLines.Count > 0 && wrappedLines[wrappedLines.Count - 1] == string.Empty)
+            //{
+            //    wrappedLines.RemoveAt(wrappedLines.Count - 1);
+            //}
 
             return wrappedLines;
         }
-        public static List<char> WrapOnChar = [ ' ', '/', '\\', ')', ']', '}', '.', '?', '!', '+' ];
+        public static List<char> WrapOnChar = [ ' ', '/', '\\', ')', ']', '}', '.', '?', '!', '+', '\t'];
+
         public static List<string> Wrap(string text, int width)
         {
             List<string> wrappedLines = new List<string>();
@@ -144,48 +150,62 @@ namespace cbcaf.Page
                     // Determine the maximum length of the current segment
                     int endIndex = Math.Min(startIndex + width, paragraph.Length);
 
-                    // Look for the last space within the current segment to break the line at a word boundary
-                    int lastSpaceIndex = -1;
-                    foreach (char c in WrapOnChar)
+                    if(endIndex != paragraph.Length)
                     {
-                        int index = paragraph.LastIndexOf(c, endIndex - 1, endIndex - startIndex);
-                        if(index>lastSpaceIndex) lastSpaceIndex = index;
+                        // Look for the last wrap character within the current segment to break the line at a word boundary
+                        int lastWrapCharIndex = -1;
+                        for (int i = endIndex - 1; i >= startIndex; i--)
+                        {
+                            if (WrapOnChar.Contains(paragraph[i]))
+                            {
+                                lastWrapCharIndex = i;
+                                break;
+                            }
+                        }
+                        if (lastWrapCharIndex != -1 || lastWrapCharIndex >= startIndex)
+                        {
+                            // No wrap character found, or wrap character is before the current segment
+                            endIndex = lastWrapCharIndex;
+                        }
                     }
-                    
-                    if (lastSpaceIndex == -1 || lastSpaceIndex < startIndex)
-                    {
-                        // No space found, or space is before the current segment
-                        lastSpaceIndex = endIndex;
-                    }
-
                     // Extract the line segment and trim any leading or trailing whitespace
-                    string lineSegment = paragraph.Substring(startIndex, lastSpaceIndex - startIndex).Trim();
+                    string lineSegment = paragraph.Substring(startIndex, endIndex - startIndex).Trim();
 
                     // Add the line segment to the list
                     wrappedLines.Add(lineSegment);
 
                     // Move to the start of the next segment
-                    startIndex = lastSpaceIndex;
+                    startIndex = endIndex;
 
-                    // Skip any spaces after the line break
-                    while (startIndex < paragraph.Length && (paragraph[startIndex] == ' ' || paragraph[startIndex] == '\n'))
+                    // Skip the wrap character and any additional spaces after the line break
+                    while (startIndex < paragraph.Length && (paragraph[startIndex] == ' '))
                     {
                         startIndex++;
                     }
                 }
 
                 // Add an empty line to maintain the paragraph break
-                wrappedLines.Add(string.Empty);
+                //wrappedLines.Add(string.Empty);
             }
 
             // Remove the last empty line added
-            if (wrappedLines.Count > 0 && wrappedLines[wrappedLines.Count - 1] == string.Empty)
-            {
-                wrappedLines.RemoveAt(wrappedLines.Count - 1);
-            }
+            //if (wrappedLines.Count > 0 && wrappedLines[wrappedLines.Count - 1] == string.Empty)
+            //{
+            //    wrappedLines.RemoveAt(wrappedLines.Count - 1);
+            //}
 
             return wrappedLines;
         }
-
+        public static List<string> GetLongText(string text, int width, LongText longTextOpt)
+        {
+            switch (longTextOpt)
+            {
+                case LongText.Cut: return Cut(text, width);
+                case LongText.Truncate: return Truncate(text, width);
+                case LongText.FixedWrap: return FixedWrap(text, width);
+                case LongText.Wrap: return Wrap(text, width);
+                default: throw new NotImplementedException("This long text option is not implemented");
+            }
+        }
     }
 }

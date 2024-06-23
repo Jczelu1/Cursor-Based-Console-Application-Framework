@@ -19,22 +19,22 @@ namespace cbcaf.Page
         public int MarginLeft { get; set; }
         public int MarginRight { get; set; }
 
-        public LongText LongText {  get; set; }
+        public LongText LongTextOption { get; set; }
 
-        public Paragraph(string text = "", string? id = null, char? group = null, bool isSelectable = true, int marginTop = 0, int marginBottom = 0, int marginLeft = 0, int marginRight = 0) : base(text, id, group, isSelectable) 
+        public Paragraph(string text = "", string? id = null, char? group = null, bool isSelectable = true, int marginTop = 0, int marginBottom = 0, int marginLeft = 0, int marginRight = 0, LongText longTextOption = LongText.Wrap) : base(text, id, group, isSelectable) 
         {
             MarginTop = marginTop;
             MarginBottom = marginBottom;
             MarginLeft = marginLeft;
             MarginRight = marginRight;
+            LongTextOption = longTextOption;
         }
         public override void PrintContent(int width, int leftOffset)
         {
             Console.Write(new string('\n', MarginTop));
 
             width -= leftOffset;
-            List<string> pText = LongTextUtil.Wrap(Text, width-MarginRight);
-            Console.SetCursorPosition(leftOffset+MarginLeft, Console.CursorTop);
+            List<string> pText = LongTextUtil.GetLongText(Text, width-MarginRight, LongTextOption);
             foreach (string line in pText)
             {
                 Console.SetCursorPosition(leftOffset + MarginLeft, Console.CursorTop);
@@ -48,8 +48,7 @@ namespace cbcaf.Page
             Console.Write(new string('\n', MarginTop));
 
             width -= leftOffset;
-            List<string> pText = LongTextUtil.Wrap(Cursor.CursorString+Text, width - MarginRight);
-            Console.SetCursorPosition(leftOffset + MarginLeft, Console.CursorTop);
+            List<string> pText = LongTextUtil.GetLongText(Cursor.CursorString + Text, width - MarginRight, LongTextOption);
             foreach (string line in pText)
             {
                 Console.SetCursorPosition(leftOffset + MarginLeft, Console.CursorTop);

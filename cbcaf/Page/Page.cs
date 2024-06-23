@@ -163,6 +163,14 @@ namespace cbcaf.Page
                 i++;
             }
         }
+        public T? GetFirstContent<T>() where T : class, IContent
+        {
+            return Contents.Find(c => c is T) as T;
+        }
+        public List<T> GetAllContents<T>() where T : class, IContent
+        {
+            return Contents.OfType<T>().ToList();
+        }
         public T? GetContentById<T>(string id) where T : class, IContent
         {
             return Contents.Find(c => c is T t && c.Id == id) as T;
