@@ -21,13 +21,16 @@ namespace cbcaf.Page
 
         public LongText LongTextOption { get; set; }
 
-        public Paragraph(string text = "", string? id = null, char? group = null, bool isSelectable = true, int marginTop = 0, int marginBottom = 0, int marginLeft = 0, int marginRight = 0, LongText longTextOption = LongText.Wrap) : base(text, id, group, isSelectable) 
+        public Align AlignOption { get; set; }
+
+        public Paragraph(string text = "", string? id = null, char? group = null, bool isSelectable = true, int marginTop = 0, int marginBottom = 0, int marginLeft = 0, int marginRight = 0, LongText longTextOption = LongText.Wrap, Align alignOption = Align.Left) : base(text, id, group, isSelectable) 
         {
             MarginTop = marginTop;
             MarginBottom = marginBottom;
             MarginLeft = marginLeft;
             MarginRight = marginRight;
             LongTextOption = longTextOption;
+            AlignOption = alignOption;
         }
         public override void PrintContent(int width, int leftOffset)
         {
@@ -37,8 +40,9 @@ namespace cbcaf.Page
             List<string> pText = LongTextUtil.GetLongText(Text, width-MarginRight, LongTextOption);
             foreach (string line in pText)
             {
+                string pLine = AlignUtil.GetAlign(line, width, AlignOption);
                 Console.SetCursorPosition(leftOffset + MarginLeft, Console.CursorTop);
-                Console.WriteLine(line);
+                Console.WriteLine(pLine);
             }
 
             Console.Write(new string('\n', MarginBottom));
@@ -51,8 +55,9 @@ namespace cbcaf.Page
             List<string> pText = LongTextUtil.GetLongText(Cursor.CursorString + Text, width - MarginRight, LongTextOption);
             foreach (string line in pText)
             {
+                string pLine = AlignUtil.GetAlign(line, width, AlignOption);
                 Console.SetCursorPosition(leftOffset + MarginLeft, Console.CursorTop);
-                Console.WriteLine(line);
+                Console.WriteLine(pLine);
             }
 
             Console.Write(new string('\n', MarginBottom));

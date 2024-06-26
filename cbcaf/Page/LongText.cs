@@ -204,7 +204,7 @@ namespace cbcaf.Page
                 case LongText.Truncate: return Truncate(text, width);
                 case LongText.FixedWrap: return FixedWrap(text, width);
                 case LongText.Wrap: return Wrap(text, width);
-                default: throw new NotImplementedException("This long text option is not implemented");
+                default: return Cut(text, width);
             }
         }
     }
