@@ -23,7 +23,7 @@ namespace cbcaf.Page
 
         public virtual void PrintContent(int width, int leftOffset)
         {
-            Console.SetCursorPosition(0, Console.CursorTop+Size);
+            Page.SafeSetCursorPosition(0, Console.CursorTop+Size);
         }
     }
 }

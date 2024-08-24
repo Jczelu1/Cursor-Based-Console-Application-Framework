@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Drawing;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
@@ -34,33 +35,39 @@ namespace cbcaf.Page
         }
         public override void PrintContent(int width, int leftOffset)
         {
-            Console.Write(new string('\n', MarginTop));
+            Page.SafeSetCursorPosition(0, Console.CursorTop + MarginTop);
 
+            leftOffset += MarginLeft;
+            if (leftOffset < 0) leftOffset = 0;
             width -= leftOffset;
-            List<string> pText = LongTextUtil.GetLongText(Text, width-MarginRight, LongTextOption);
+            width -= MarginRight;
+            List<string> pText = LongTextUtil.GetLongText(Text, width, LongTextOption);
             foreach (string line in pText)
             {
                 string pLine = AlignUtil.GetAlign(line, width, AlignOption);
-                Console.SetCursorPosition(leftOffset + MarginLeft, Console.CursorTop);
+                Page.SafeSetCursorPosition(leftOffset, Console.CursorTop);
                 Console.WriteLine(pLine);
             }
 
-            Console.Write(new string('\n', MarginBottom));
+            Page.SafeSetCursorPosition(0, Console.CursorTop + MarginBottom);
         }
         public override void PrintContentSelected(int width, int leftOffset)
         {
-            Console.Write(new string('\n', MarginTop));
+            Page.SafeSetCursorPosition(0, Console.CursorTop + MarginTop);
 
+            leftOffset += MarginLeft;
+            if (leftOffset < 0) leftOffset = 0;
             width -= leftOffset;
-            List<string> pText = LongTextUtil.GetLongText(Cursor.CursorString + Text, width - MarginRight, LongTextOption);
+            width -= MarginRight;
+            List<string> pText = LongTextUtil.GetLongText(Cursor.CursorString + Text, width, LongTextOption);
             foreach (string line in pText)
             {
                 string pLine = AlignUtil.GetAlign(line, width, AlignOption);
-                Console.SetCursorPosition(leftOffset + MarginLeft, Console.CursorTop);
+                Page.SafeSetCursorPosition(leftOffset, Console.CursorTop);
                 Console.WriteLine(pLine);
             }
 
-            Console.Write(new string('\n', MarginBottom));
+            Page.SafeSetCursorPosition(0, Console.CursorTop + MarginBottom);
         }
     }
 }

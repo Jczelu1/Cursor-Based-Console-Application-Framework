@@ -25,11 +25,12 @@ namespace cbcaf.Page
         public virtual void PrintContent(int width, int leftOffset)
         {
             width -= leftOffset;
+            if (leftOffset < 0) leftOffset = 0;
             List<string> pText = LongTextUtil.Cut(Text, width);
-            Console.SetCursorPosition(leftOffset, Console.CursorTop);
+            Page.SafeSetCursorPosition(leftOffset, Console.CursorTop);
             foreach (string line in pText)
             {
-                Console.SetCursorPosition(leftOffset, Console.CursorTop);
+                Page.SafeSetCursorPosition(leftOffset, Console.CursorTop);
                 Console.WriteLine(line);
             }
         }
@@ -37,11 +38,12 @@ namespace cbcaf.Page
         public virtual void PrintContentSelected(int width, int leftOffset)
         {
             width -= leftOffset;
+            if (leftOffset < 0) leftOffset = 0;
             List<string> pText = LongTextUtil.Cut(Cursor.CursorString+Text, width);
-            Console.SetCursorPosition(leftOffset, Console.CursorTop);
+            Page.SafeSetCursorPosition(leftOffset, Console.CursorTop);
             foreach (string line in pText)
             {
-                Console.SetCursorPosition(leftOffset, Console.CursorTop);
+                Page.SafeSetCursorPosition(leftOffset, Console.CursorTop);
                 Console.WriteLine(line);
             }
         }

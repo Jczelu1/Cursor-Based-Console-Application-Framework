@@ -187,5 +187,15 @@ namespace cbcaf.Page
         {
             return Contents.FindAll(c => c.Group == group).OfType<T>().ToList();
         }
+
+        //maybe put in a diffrent place
+        public static void SafeSetCursorPosition(int left, int top)
+        {
+            if(left < 0) left = 0;
+            if(left > Console.BufferWidth) left = Console.BufferWidth;
+            if (top < 0) top = 0;
+            if(top > Console.BufferHeight) top = Console.BufferHeight;
+            Console.SetCursorPosition(left, top);
+        }
     }
 }
