@@ -32,10 +32,7 @@ namespace cbcaf.Page
                 }
 
                 // Get the current line segment
-                string lineSegment = text.Substring(startIndex, newlineIndex - startIndex).Trim();
-
-                // Trim end whitespace only
-                lineSegment = lineSegment.TrimEnd();
+                string lineSegment = text.Substring(startIndex, newlineIndex - startIndex).TrimEnd();
 
                 if (lineSegment.Length > width)
                 {
@@ -71,10 +68,8 @@ namespace cbcaf.Page
                 }
 
                 // Get the current line segment
-                string lineSegment = text.Substring(startIndex, newlineIndex - startIndex);
+                string lineSegment = text.Substring(startIndex, newlineIndex - startIndex).TrimEnd();
 
-                // Trim end whitespace only
-                lineSegment = lineSegment.TrimEnd();
 
                 // Cut the line segment to the specified width and add to the list
                 if (lineSegment.Length > width)
@@ -107,7 +102,7 @@ namespace cbcaf.Page
                     int endIndex = Math.Min(startIndex + width, paragraph.Length);
 
                     // Extract the line segment and trim any leading or trailing whitespace
-                    string lineSegment = paragraph.Substring(startIndex, endIndex - startIndex).Trim();
+                    string lineSegment = paragraph.Substring(startIndex, endIndex - startIndex).TrimEnd();
 
                     // Add the line segment to the list
                     wrappedLines.Add(lineSegment);
@@ -169,7 +164,7 @@ namespace cbcaf.Page
                         }
                     }
                     // Extract the line segment and trim any leading or trailing whitespace
-                    string lineSegment = paragraph.Substring(startIndex, endIndex - startIndex).Trim();
+                    string lineSegment = paragraph.Substring(startIndex, endIndex - startIndex).TrimEnd();
 
                     // Add the line segment to the list
                     wrappedLines.Add(lineSegment);

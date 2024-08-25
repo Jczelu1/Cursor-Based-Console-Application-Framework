@@ -144,6 +144,8 @@ namespace cbcaf.Page
             OnDisplay?.Invoke();
 
             DisplayContents();
+
+            ClearAlerts();
         }
         public void DisplayContents()
         {
@@ -188,6 +190,42 @@ namespace cbcaf.Page
             return Contents.FindAll(c => c.Group == group).OfType<T>().ToList();
         }
 
+        public void AddAlert(IPrintable content, AlertPosition alertPosition)
+        {
+            if (content == null) return;
+            Alert alert = new Alert(content);
+            switch (alertPosition)
+            {
+                case AlertPosition.Top:
+                    Contents.Insert(0, alert);
+                    Cursor++;
+                    break;
+                case AlertPosition.Bottom:
+                    Contents.Add(alert);
+                    break;
+                case AlertPosition.AboveCursor:
+                    Contents.Insert(Cursor, alert);
+                    Cursor++;
+                    break;
+                case AlertPosition.BelowCursor:
+                    Contents.Insert(Cursor+1, alert);
+                    break;
+            }
+            Display();
+        }
+        public void ClearAlerts()
+        {
+            for(int i = 0; i < Contents.Count; i++)
+            {
+                if(Contents[i] is IAlert)
+                {
+                    if (Cursor > i) Cursor--;
+                    Contents.RemoveAt(i);
+                    i--;
+                }
+            }
+        }
+
         //maybe put in a diffrent place
         public static void SafeSetCursorPosition(int left, int top)
         {
@@ -197,5 +235,12 @@ namespace cbcaf.Page
             if(top > Console.BufferHeight) top = Console.BufferHeight;
             Console.SetCursorPosition(left, top);
         }
+    }
+    public enum AlertPosition
+    {
+        Top,
+        Bottom,
+        AboveCursor,
+        BelowCursor
     }
 }
