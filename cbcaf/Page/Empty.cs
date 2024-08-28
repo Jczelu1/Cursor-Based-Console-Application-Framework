@@ -3,8 +3,6 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
-using static System.Net.Mime.MediaTypeNames;
-
 namespace cbcaf.Page
 {
     public class Empty : IPrintable
@@ -23,7 +21,7 @@ namespace cbcaf.Page
 
         public virtual void PrintContent(int width, int leftOffset)
         {
-            Page.SafeSetCursorPosition(0, Console.CursorTop+Size);
+            Console.Write(new string('\n', Size));
         }
     }
 }

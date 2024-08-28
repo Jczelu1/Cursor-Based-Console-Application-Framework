@@ -30,14 +30,14 @@ namespace cbcaf.Page
         public virtual void PrintContent(int width, int leftOffset)
         {
             if (string.IsNullOrEmpty(Pattern)) Pattern = " ";
-            Page.SafeSetCursorPosition(0, Console.CursorTop + MarginTop);
+            Console.Write(new string('\n', MarginTop));
 
             leftOffset += MarginLeft;
             if(leftOffset < 0) leftOffset = 0;
             width -= leftOffset;
             width -= MarginRight;
             
-            Page.SafeSetCursorPosition(leftOffset, Console.CursorTop);
+            Console.SetCursorPosition(leftOffset, Console.CursorTop);
             string pString = "";
             if (Pattern.Length == 1)
             {
@@ -60,7 +60,7 @@ namespace cbcaf.Page
             }
             Console.WriteLine(pString);
 
-            Page.SafeSetCursorPosition(0, Console.CursorTop + MarginTop);
+            Console.Write(new string('\n', MarginBottom));
         }
     }
 }

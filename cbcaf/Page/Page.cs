@@ -2,6 +2,7 @@
 using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Runtime.InteropServices;
 using System.Text;
 
 namespace cbcaf.Page
@@ -141,9 +142,15 @@ namespace cbcaf.Page
             //ContentStyle.ApplyBaseStyles(PageStyles);
             Console.Clear();
 
+            //set max buffer
+            if (RuntimeInformation.IsOSPlatform(OSPlatform.Windows))
+                Console.SetBufferSize(Console.BufferWidth, 255);
+
             OnDisplay?.Invoke();
 
             DisplayContents();
+
+            SetBuffer();
 
             ClearAlerts();
         }
@@ -164,6 +171,14 @@ namespace cbcaf.Page
                 }
                 i++;
             }
+        }
+        public void SetBuffer()
+        {
+            if (RuntimeInformation.IsOSPlatform(OSPlatform.Windows))
+            {
+                Console.SetBufferSize(Console.BufferWidth, Math.Max(Console.CursorTop+1, Console.WindowHeight));
+            }
+            
         }
         public T? GetFirstContent<T>() where T : class, IContent
         {

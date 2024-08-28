@@ -27,10 +27,10 @@ namespace cbcaf.Page
             width -= leftOffset;
             if (leftOffset < 0) leftOffset = 0;
             List<string> pText = LongTextUtil.Cut(Text, width);
-            Page.SafeSetCursorPosition(leftOffset, Console.CursorTop);
+            Console.SetCursorPosition(leftOffset, Console.CursorTop);
             foreach (string line in pText)
             {
-                Page.SafeSetCursorPosition(leftOffset, Console.CursorTop);
+                Console.SetCursorPosition(leftOffset, Console.CursorTop);
                 Console.WriteLine(line);
             }
         }
@@ -40,10 +40,10 @@ namespace cbcaf.Page
             width -= leftOffset;
             if (leftOffset < 0) leftOffset = 0;
             List<string> pText = LongTextUtil.Cut(Cursor.CursorString+Text, width);
-            Page.SafeSetCursorPosition(leftOffset, Console.CursorTop);
+            Console.SetCursorPosition(leftOffset, Console.CursorTop);
             foreach (string line in pText)
             {
-                Page.SafeSetCursorPosition(leftOffset, Console.CursorTop);
+                Console.SetCursorPosition(leftOffset, Console.CursorTop);
                 Console.WriteLine(line);
             }
         }

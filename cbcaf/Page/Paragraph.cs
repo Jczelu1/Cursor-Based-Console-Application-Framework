@@ -35,7 +35,7 @@ namespace cbcaf.Page
         }
         public override void PrintContent(int width, int leftOffset)
         {
-            Page.SafeSetCursorPosition(0, Console.CursorTop + MarginTop);
+            Console.Write(new string('\n', MarginTop));
 
             leftOffset += MarginLeft;
             if (leftOffset < 0) leftOffset = 0;
@@ -45,15 +45,15 @@ namespace cbcaf.Page
             foreach (string line in pText)
             {
                 string pLine = AlignUtil.GetAlign(line, width, AlignOption);
-                Page.SafeSetCursorPosition(leftOffset, Console.CursorTop);
+                Console.SetCursorPosition(leftOffset, Console.CursorTop);
                 Console.WriteLine(pLine);
             }
 
-            Page.SafeSetCursorPosition(0, Console.CursorTop + MarginBottom);
+            Console.Write(new string('\n', MarginBottom));
         }
         public override void PrintContentSelected(int width, int leftOffset)
         {
-            Page.SafeSetCursorPosition(0, Console.CursorTop + MarginTop);
+            Console.Write(new string('\n', MarginTop));
 
             leftOffset += MarginLeft;
             if (leftOffset < 0) leftOffset = 0;
@@ -63,11 +63,11 @@ namespace cbcaf.Page
             foreach (string line in pText)
             {
                 string pLine = AlignUtil.GetAlign(line, width, AlignOption);
-                Page.SafeSetCursorPosition(leftOffset, Console.CursorTop);
+                Console.SetCursorPosition(leftOffset, Console.CursorTop);
                 Console.WriteLine(pLine);
             }
 
-            Page.SafeSetCursorPosition(0, Console.CursorTop + MarginBottom);
+            Console.Write(new string('\n', MarginBottom));
         }
     }
 }
