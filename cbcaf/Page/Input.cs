@@ -6,7 +6,7 @@ using System.Threading.Tasks;
 
 namespace cbcaf.Page
 {
-    public interface IInput : ISelectable
+    public interface IInput : IExecutable
     {
         public string Value { get; set; }
 
@@ -28,7 +28,14 @@ namespace cbcaf.Page
         public int InputCursor { get; private set; }
         public CharCheck? IsValidChar { get; set; }
 
-        public Input(string label = "", string value = "", string? id = null, char? group = null, bool isSelectable = true, CharCheck? charCheck = null)
+        public Procedure? OnExecute;
+
+        public int MarginTop { get; set; }
+        public int MarginBottom { get; set; }
+        public int MarginLeft { get; set; }
+        public int MarginRight { get; set; }
+
+        public Input(string label = "", string value = "", string? id = null, char? group = null, bool isSelectable = true, CharCheck? charCheck = null, Procedure? onExecute = null, int marginTop = 0, int marginBottom = 0, int marginLeft = 0, int marginRight = 0)
         {
             Id = id;
             Group = group;
@@ -37,6 +44,11 @@ namespace cbcaf.Page
             InputCursor = 0;
             IsValidChar = charCheck;
             IsSelectable = isSelectable;
+            OnExecute = onExecute;
+            MarginTop = marginTop;
+            MarginBottom = marginBottom;
+            MarginLeft = marginLeft;
+            MarginRight = marginRight;
         }
 
         public void AddChar(char c)
@@ -67,8 +79,11 @@ namespace cbcaf.Page
         }
         public void PrintContent(int width, int leftOffset)
         {
-            width -= leftOffset;
+            Console.Write(new string('\n', MarginTop));
+            leftOffset += MarginLeft;
             if (leftOffset < 0) leftOffset = 0;
+            width -= leftOffset;
+            width -= MarginRight;
             List<string> pText = LongTextUtil.FixedWrap(Label + Value, width);
             Console.SetCursorPosition(leftOffset, Console.CursorTop);
             foreach (string line in pText)
@@ -76,11 +91,15 @@ namespace cbcaf.Page
                 Console.SetCursorPosition(leftOffset, Console.CursorTop);
                 Console.WriteLine(line);
             }
+            Console.Write(new string('\n', MarginBottom));
         }
         public void PrintContentSelected(int width, int leftOffset)
         {
-            width -= leftOffset;
+            Console.Write(new string('\n', MarginTop));
+            leftOffset += MarginLeft;
             if (leftOffset < 0) leftOffset = 0;
+            width -= leftOffset;
+            width -= MarginRight;
             List<string> pText = LongTextUtil.FixedWrap(Cursor.CursorString+Label + Value, width);
             Console.SetCursorPosition(leftOffset, Console.CursorTop);
             foreach (string line in pText)
@@ -88,6 +107,7 @@ namespace cbcaf.Page
                 Console.SetCursorPosition(leftOffset, Console.CursorTop);
                 Console.WriteLine(line);
             }
+            Console.Write(new string('\n', MarginBottom));
         }
         public Position PrintInputSelected(int width, int leftOffset)
         {
@@ -105,6 +125,10 @@ namespace cbcaf.Page
                 Console.WriteLine(line);
             }
             return position;
+        }
+        public void Execute()
+        {
+            OnExecute?.Invoke();
         }
     }
 }
