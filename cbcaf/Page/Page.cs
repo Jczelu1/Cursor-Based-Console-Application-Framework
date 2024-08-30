@@ -154,6 +154,7 @@ namespace cbcaf.Page
         }
         public void DisplayContents()
         {
+            Console.CursorVisible = false;
             Position CursorPosition = new Position(0,0);
             int i = 0;
             Console.Write(new string('\n', MarginTop));
@@ -164,9 +165,10 @@ namespace cbcaf.Page
                 {
                     if(c is IInput input)
                     {
-                        CursorPosition = input.PrintContentSelected(WindowSize.CurrentWidth - MarginRight, MarginLeft);
+                        CursorPosition = input.PrintInputSelected(WindowSize.CurrentWidth - MarginRight, MarginLeft);
+                        Console.CursorVisible = true;
                     }
-                    if(c is ISelectable s)
+                    else if(c is ISelectable s)
                     {
                         CursorPosition.Top = Console.CursorTop;
                         s.PrintContentSelected(WindowSize.CurrentWidth - MarginRight, MarginLeft);
@@ -259,15 +261,29 @@ namespace cbcaf.Page
                 }
             }
         }
-
-        //maybe put in a diffrent place
-        public static void SafeSetCursorPosition(int left, int top)
+        public void InputBackspace()
         {
-            if(left < 0) left = 0;
-            if(left > Console.BufferWidth) left = Console.BufferWidth;
-            if (top < 0) top = 0;
-            if(top > Console.BufferHeight) top = Console.BufferHeight;
-            Console.SetCursorPosition(left, top);
+            if (Contents[Cursor] is IInput input)
+            {
+                input.RemoveChar();
+                Display();
+            }
+        }
+        public void InputRight()
+        {
+            if (Contents[Cursor] is IInput input)
+            {
+                input.Right();
+                Display();
+            }
+        }
+        public void InputLeft()
+        {
+            if (Contents[Cursor] is IInput input)
+            {
+                input.Left();
+                Display();
+            }
         }
     }
     public enum AlertPosition
