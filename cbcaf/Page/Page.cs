@@ -154,16 +154,23 @@ namespace cbcaf.Page
         }
         public void DisplayContents()
         {
-            int CursorLine = 0;
+            Position CursorPosition = new Position(0,0);
             int i = 0;
             Console.Write(new string('\n', MarginTop));
             i = 0;
             foreach (IContent c in Contents)
             {
-                if(Cursor == i && c is ISelectable s)
+                if(Cursor == i)
                 {
-                    CursorLine = Console.CursorTop;
-                    s.PrintContentSelected(WindowSize.CurrentWidth - MarginRight, MarginLeft);
+                    if(c is IInput input)
+                    {
+                        CursorPosition = input.PrintContentSelected(WindowSize.CurrentWidth - MarginRight, MarginLeft);
+                    }
+                    if(c is ISelectable s)
+                    {
+                        CursorPosition.Top = Console.CursorTop;
+                        s.PrintContentSelected(WindowSize.CurrentWidth - MarginRight, MarginLeft);
+                    }
                 }
                 else if(c is IPrintable p)
                 {
@@ -173,14 +180,14 @@ namespace cbcaf.Page
             }
             
             SetBuffer();
-            Console.SetCursorPosition(0, CursorLine);
+            Console.SetCursorPosition(CursorPosition.Left, CursorPosition.Top);
             if (RuntimeInformation.IsOSPlatform(OSPlatform.Windows))
             {
-                if (Console.BufferHeight > CursorLine + (Console.WindowHeight / 2))
-                    Console.SetWindowPosition(0, Math.Max((CursorLine - Console.WindowHeight / 2) - 2, 0));
+                if (Console.BufferHeight > CursorPosition.Top + (Console.WindowHeight / 2))
+                    Console.SetWindowPosition(0, Math.Max((CursorPosition.Top - Console.WindowHeight / 2) - 2, 0));
                 else
                 {
-                    Console.SetCursorPosition(0, Math.Max((CursorLine - Console.WindowHeight / 2) - 2, 0));
+                    Console.SetCursorPosition(0, Math.Max((CursorPosition.Top - Console.WindowHeight / 2) - 2, 0));
                 }
             }   
         }
