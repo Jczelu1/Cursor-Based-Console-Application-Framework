@@ -150,12 +150,11 @@ namespace cbcaf.Page
 
             DisplayContents();
 
-            SetBuffer();
-
             ClearAlerts();
         }
         public void DisplayContents()
         {
+            int CursorLine = 0;
             int i = 0;
             Console.Write(new string('\n', MarginTop));
             i = 0;
@@ -163,6 +162,7 @@ namespace cbcaf.Page
             {
                 if(Cursor == i && c is ISelectable s)
                 {
+                    CursorLine = Console.CursorTop;
                     s.PrintContentSelected(WindowSize.CurrentWidth - MarginRight, MarginLeft);
                 }
                 else if(c is IPrintable p)
@@ -171,6 +171,18 @@ namespace cbcaf.Page
                 }
                 i++;
             }
+            
+            SetBuffer();
+            Console.SetCursorPosition(0, CursorLine);
+            if (RuntimeInformation.IsOSPlatform(OSPlatform.Windows))
+            {
+                if (Console.BufferHeight > CursorLine + (Console.WindowHeight / 2))
+                    Console.SetWindowPosition(0, Math.Max((CursorLine - Console.WindowHeight / 2) - 2, 0));
+                else
+                {
+                    Console.SetCursorPosition(0, Math.Max((CursorLine - Console.WindowHeight / 2) - 2, 0));
+                }
+            }   
         }
         public void SetBuffer()
         {
