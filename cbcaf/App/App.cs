@@ -58,6 +58,9 @@ namespace cbcaf.App
                 new Control(ConsoleKey.Escape, ()=>{ Back(); }),
                 new Control(ConsoleKey.Tab, ()=>{ Forward(); }),
                 new Control(ConsoleKey.Enter, ()=>{ CurrentPage.ExecCursor(); }),
+                new Control(ConsoleKey.Backspace, ()=>{ CurrentPage.InputBackspace(); }),
+                new Control(ConsoleKey.RightArrow, ()=>{ CurrentPage.InputRight(); }),
+                new Control(ConsoleKey.LeftArrow, ()=>{ CurrentPage.InputLeft(); }),
             ];
             Controls = DefaultControls;
         }
@@ -160,8 +163,20 @@ namespace cbcaf.App
         }
         private void ExecuteKey()
         {
-            ConsoleKey key = KeyReader.GetKey().Key;
-            Controls.FindAll(ctrl => ctrl.ConsoleKey == key).ForEach(ctrl => ctrl.OnPress());
+            ConsoleKeyInfo keyInfo = KeyReader.GetKey();  // Read the key information
+            ConsoleKey key = keyInfo.Key;
+
+            // Check if the current content at the cursor is an IInput and if the key is a valid character
+            if (CurrentPage.Contents[CurrentPage.Cursor] is IInput input && !char.IsControl(keyInfo.KeyChar))
+            {
+                input.AddChar(keyInfo.KeyChar);  // Add the character to the input
+                CurrentPage.Display();
+            }
+            else
+            {
+                // Trigger controls that match the pressed key
+                Controls.FindAll(ctrl => ctrl.ConsoleKey == key).ForEach(ctrl => ctrl.OnPress());
+            }
         }
 
         public int GetPageIndex(string id)

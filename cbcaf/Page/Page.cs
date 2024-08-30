@@ -154,16 +154,25 @@ namespace cbcaf.Page
         }
         public void DisplayContents()
         {
-            int CursorLine = 0;
+            Console.CursorVisible = false;
+            Position CursorPosition = new Position(0,0);
             int i = 0;
             Console.Write(new string('\n', MarginTop));
             i = 0;
             foreach (IContent c in Contents)
             {
-                if(Cursor == i && c is ISelectable s)
+                if(Cursor == i)
                 {
-                    CursorLine = Console.CursorTop;
-                    s.PrintContentSelected(WindowSize.CurrentWidth - MarginRight, MarginLeft);
+                    if(c is IInput input)
+                    {
+                        CursorPosition = input.PrintInputSelected(WindowSize.CurrentWidth - MarginRight, MarginLeft);
+                        Console.CursorVisible = true;
+                    }
+                    else if(c is ISelectable s)
+                    {
+                        CursorPosition.Top = Console.CursorTop;
+                        s.PrintContentSelected(WindowSize.CurrentWidth - MarginRight, MarginLeft);
+                    }
                 }
                 else if(c is IPrintable p)
                 {
@@ -173,14 +182,14 @@ namespace cbcaf.Page
             }
             
             SetBuffer();
-            Console.SetCursorPosition(0, CursorLine);
+            Console.SetCursorPosition(CursorPosition.Left, CursorPosition.Top);
             if (RuntimeInformation.IsOSPlatform(OSPlatform.Windows))
             {
-                if (Console.BufferHeight > CursorLine + (Console.WindowHeight / 2))
-                    Console.SetWindowPosition(0, Math.Max((CursorLine - Console.WindowHeight / 2) - 2, 0));
+                if (Console.BufferHeight > CursorPosition.Top + (Console.WindowHeight / 2))
+                    Console.SetWindowPosition(0, Math.Max((CursorPosition.Top - Console.WindowHeight / 2) - 2, 0));
                 else
                 {
-                    Console.SetCursorPosition(0, Math.Max((CursorLine - Console.WindowHeight / 2) - 2, 0));
+                    Console.SetCursorPosition(0, Math.Max((CursorPosition.Top - Console.WindowHeight / 2) - 2, 0));
                 }
             }   
         }
@@ -252,15 +261,29 @@ namespace cbcaf.Page
                 }
             }
         }
-
-        //maybe put in a diffrent place
-        public static void SafeSetCursorPosition(int left, int top)
+        public void InputBackspace()
         {
-            if(left < 0) left = 0;
-            if(left > Console.BufferWidth) left = Console.BufferWidth;
-            if (top < 0) top = 0;
-            if(top > Console.BufferHeight) top = Console.BufferHeight;
-            Console.SetCursorPosition(left, top);
+            if (Contents[Cursor] is IInput input)
+            {
+                input.RemoveChar();
+                Display();
+            }
+        }
+        public void InputRight()
+        {
+            if (Contents[Cursor] is IInput input)
+            {
+                input.Right();
+                Display();
+            }
+        }
+        public void InputLeft()
+        {
+            if (Contents[Cursor] is IInput input)
+            {
+                input.Left();
+                Display();
+            }
         }
     }
     public enum AlertPosition
