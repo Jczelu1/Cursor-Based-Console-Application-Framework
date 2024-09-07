@@ -26,6 +26,8 @@ namespace cbcaf.Page
         public string Label { get; set; }
         public string Value { get; set; }
         public int InputCursor { get; private set; }
+
+        public int InputOffset { get; private set; }
         public CharCheck? IsValidChar { get; set; }
 
         public Procedure? OnExecute;
@@ -56,12 +58,33 @@ namespace cbcaf.Page
 
         public void AddChar(char c)
         {
+            //something is wrong with the margins, added temporary corrections
             if (IsValidChar == null || IsValidChar(c))
             {
                 Value = Value.Insert(InputCursor, c.ToString());
                 InputCursor++;
             }
-            Console.Write(c.ToString());
+            //temporary correction
+            if(InputCursor + 2 == Width - Label.Length + InputOffset)
+            {
+                InputOffset++;
+                //temporary correction
+                Console.SetCursorPosition(LeftOffset+Label.Length+1, Console.CursorTop);
+                Console.Write(Value.Substring(InputOffset));
+            }
+            //temporary correction
+            else if (Value.Length - InputOffset > Width - Label.Length - 3)
+            {
+                Console.Write(c.ToString());
+                int cursorPos = Console.CursorLeft;
+                //temporary correction
+                Console.Write(Value.Substring(InputCursor, Width-Label.Length-InputCursor+InputOffset - 3));
+                Console.SetCursorPosition(cursorPos, Console.CursorTop);
+            }
+            else
+            {
+                Console.Write(c.ToString());
+            }
         }
         public void RemoveChar()
         {
@@ -78,14 +101,19 @@ namespace cbcaf.Page
         public void Left()
         {
             if(InputCursor > 0)
+            {
                 InputCursor--;
-            Console.SetCursorPosition(Console.CursorLeft - 1, Console.CursorTop);
+                Console.SetCursorPosition(Console.CursorLeft - 1, Console.CursorTop);
+            }
+                
         }
         public void Right()
         {
             if(InputCursor < Value.Length)
+            {
                 InputCursor++;
-            Console.SetCursorPosition(Console.CursorLeft - 1, Console.CursorTop);
+                Console.SetCursorPosition(Console.CursorLeft + 1, Console.CursorTop);
+            }
         }
         public void PrintContent(int width, int leftOffset)
         {
