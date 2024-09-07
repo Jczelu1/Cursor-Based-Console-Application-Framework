@@ -39,7 +39,7 @@ namespace cbcaf.Page
 
             leftOffset += MarginLeft;
             if (leftOffset < 0) leftOffset = 0;
-            width -= leftOffset;
+            
             width -= MarginRight;
             List<string> pText = LongTextUtil.GetLongText(Text, width, LongTextOption);
             foreach (string line in pText)
@@ -57,7 +57,7 @@ namespace cbcaf.Page
 
             leftOffset += MarginLeft;
             if (leftOffset < 0) leftOffset = 0;
-            width -= leftOffset;
+            
             width -= MarginRight;
             List<string> pText = LongTextUtil.GetLongText(Cursor.CursorString + Text, width, LongTextOption);
             foreach (string line in pText)

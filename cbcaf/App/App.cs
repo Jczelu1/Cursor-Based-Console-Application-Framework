@@ -170,7 +170,7 @@ namespace cbcaf.App
             if (CurrentPage.Contents[CurrentPage.Cursor] is IInput input && !char.IsControl(keyInfo.KeyChar))
             {
                 input.AddChar(keyInfo.KeyChar);  // Add the character to the input
-                CurrentPage.Display();
+                //CurrentPage.Display();
             }
             else
             {

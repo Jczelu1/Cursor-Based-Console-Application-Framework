@@ -34,7 +34,6 @@ namespace cbcaf.Page
 
             leftOffset += MarginLeft;
             if(leftOffset < 0) leftOffset = 0;
-            width -= leftOffset;
             width -= MarginRight;
             
             Console.SetCursorPosition(leftOffset, Console.CursorTop);

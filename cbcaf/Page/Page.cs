@@ -165,18 +165,18 @@ namespace cbcaf.Page
                 {
                     if(c is IInput input)
                     {
-                        CursorPosition = input.PrintInputSelected(WindowSize.CurrentWidth - MarginRight, MarginLeft);
+                        CursorPosition = input.PrintInputSelected(WindowSize.CurrentWidth - MarginRight - MarginLeft, MarginLeft);
                         Console.CursorVisible = true;
                     }
                     else if(c is ISelectable s)
                     {
                         CursorPosition.Top = Console.CursorTop;
-                        s.PrintContentSelected(WindowSize.CurrentWidth - MarginRight, MarginLeft);
+                        s.PrintContentSelected(WindowSize.CurrentWidth - MarginRight - MarginRight - MarginLeft, MarginLeft);
                     }
                 }
                 else if(c is IPrintable p)
                 {
-                    p.PrintContent(WindowSize.CurrentWidth - MarginRight, MarginLeft);
+                    p.PrintContent(WindowSize.CurrentWidth - MarginRight - MarginRight - MarginLeft, MarginLeft);
                 }
                 i++;
             }
@@ -266,7 +266,7 @@ namespace cbcaf.Page
             if (Contents[Cursor] is IInput input)
             {
                 input.RemoveChar();
-                Display();
+                //Display();
             }
         }
         public void InputRight()
@@ -274,7 +274,7 @@ namespace cbcaf.Page
             if (Contents[Cursor] is IInput input)
             {
                 input.Right();
-                Display();
+                //Display();
             }
         }
         public void InputLeft()
@@ -282,7 +282,7 @@ namespace cbcaf.Page
             if (Contents[Cursor] is IInput input)
             {
                 input.Left();
-                Display();
+                //Display();
             }
         }
     }
