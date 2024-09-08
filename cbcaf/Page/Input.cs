@@ -62,23 +62,23 @@ namespace cbcaf.Page
             {
                 Value = Value.Insert(InputCursor, c.ToString());
                 InputCursor++;
-            }
-            if(InputCursor == Width - Label.Length + InputOffset)
-            {
-                InputOffset++;
-                Console.SetCursorPosition(LeftOffset+Label.Length+1, Console.CursorTop);
-                Console.Write(Value.Substring(InputOffset));
-            }
-            else if (Value.Length - InputOffset > Width - Label.Length - 1)
-            {
-                Console.Write(c.ToString());
-                int cursorPos = Console.CursorLeft;
-                Console.Write(Value.Substring(InputCursor, Width-Label.Length-InputCursor+InputOffset - 1));
-                Console.SetCursorPosition(cursorPos, Console.CursorTop);
-            }
-            else
-            {
-                Console.Write(c.ToString());
+                if (InputCursor == Width - Label.Length + InputOffset)
+                {
+                    InputOffset++;
+                    Console.SetCursorPosition(LeftOffset + Label.Length + 1, Console.CursorTop);
+                    Console.Write(Value.Substring(InputOffset));
+                }
+                else if (Value.Length - InputOffset > InputCursor)
+                {
+                    Console.Write(c.ToString());
+                    int cursorPos = Console.CursorLeft;
+                    Console.Write(Value.Substring(InputCursor, Math.Min(Width - Label.Length - InputCursor + InputOffset - 1,Value.Length - InputCursor)));
+                    Console.SetCursorPosition(cursorPos, Console.CursorTop);
+                }
+                else
+                {
+                    Console.Write(c.ToString());
+                }
             }
         }
         public void RemoveChar()
@@ -87,17 +87,45 @@ namespace cbcaf.Page
             {
                 InputCursor--;
                 Value = Value.Remove(InputCursor, 1);
+                if (InputCursor == InputOffset && InputOffset!=0)
+                {
+                    InputOffset--;
+                }
+                else if(Value.Length - InputOffset > InputCursor)
+                {
+                    Console.SetCursorPosition(Console.CursorLeft - 1, Console.CursorTop);
+                    int cursorPos = Console.CursorLeft;
+                    Console.Write(Value.Substring(InputCursor, Math.Min(Width - Label.Length - InputCursor + InputOffset - 1, Value.Length - InputCursor)));
+                    Console.Write(' ');
+                    Console.SetCursorPosition(cursorPos, Console.CursorTop);
+                }
+                else
+                {
+                    Console.SetCursorPosition(Console.CursorLeft - 1, Console.CursorTop);
+                    Console.Write(' ');
+                    Console.SetCursorPosition(Console.CursorLeft - 1, Console.CursorTop);
+                }
             }
-            Console.SetCursorPosition(Console.CursorLeft-1, Console.CursorTop);
-            Console.Write(' ');
-            Console.SetCursorPosition(Console.CursorLeft - 1, Console.CursorTop);
         }
         public void Left()
         {
             if(InputCursor > 0)
             {
-                InputCursor--;
-                Console.SetCursorPosition(Console.CursorLeft - 1, Console.CursorTop);
+                if(InputCursor == InputOffset)
+                {
+                    if(InputOffset != 0)
+                    {
+                        InputCursor--;
+                        InputOffset--;
+                        Console.Write(Value.Substring(InputCursor ,Math.Min(Width - Label.Length -1, Value.Length - InputCursor)));
+                        Console.SetCursorPosition(LeftOffset + Label.Length + 1, Console.CursorTop);
+                    }
+                }
+                else
+                {
+                    InputCursor--;
+                    Console.SetCursorPosition(Console.CursorLeft - 1, Console.CursorTop);
+                }
             }
                 
         }
@@ -105,8 +133,21 @@ namespace cbcaf.Page
         {
             if(InputCursor < Value.Length)
             {
-                InputCursor++;
-                Console.SetCursorPosition(Console.CursorLeft + 1, Console.CursorTop);
+                if (InputCursor == Width - Label.Length + InputOffset -1)
+                {
+                    if (InputOffset != Value.Length - Width + Label.Length)
+                    {
+                        InputCursor++;
+                        InputOffset++;
+                        Console.SetCursorPosition(LeftOffset + Label.Length + 1, Console.CursorTop);
+                        Console.Write(Value.Substring(InputOffset, Math.Min(Width - Label.Length - 1, Value.Length - InputOffset)));
+                    } 
+                }
+                else
+                {
+                    InputCursor++;
+                    Console.SetCursorPosition(Console.CursorLeft + 1, Console.CursorTop);
+                }
             }
         }
         public void PrintContent(int width, int leftOffset)
