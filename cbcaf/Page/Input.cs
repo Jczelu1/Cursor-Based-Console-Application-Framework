@@ -27,7 +27,7 @@ namespace cbcaf.Page
         public string Value { get; set; }
         public int InputCursor { get; private set; }
 
-        public int InputOffset { get; private set; }
+        public int InputOffset { get; private set; } = 0;
         public CharCheck? IsValidChar { get; set; }
 
         public Procedure? OnExecute;
@@ -189,26 +189,18 @@ namespace cbcaf.Page
             LeftOffset = leftOffset;
             Console.Write(new string('\n', MarginTop));
             if (leftOffset < 0) leftOffset = 0;
-            
-            Position position = new Position();
-            List<string> pText = LongTextUtil.FixedWrap(Cursor.CursorString + Label + Value, width);
-            Console.SetCursorPosition(leftOffset, Console.CursorTop);
-            int i = 0;
-            foreach (string line in pText)
-            {
-                Console.SetCursorPosition(leftOffset, Console.CursorTop);
-                Console.Write(line);
-                if(i == pText.Count - 1)
-                {
-                    position.Top = Console.CursorTop;
-                    position.Left = Console.CursorLeft;
-                }
-                Console.Write("\n");
-                i++;
-            }
 
-            Console.Write(new string('\n', MarginBottom));
+            InputOffset = Math.Max(Value.Length - Width + Label.Length+1,0);
             InputCursor = Value.Length;
+
+            Position position = new Position();
+            Console.SetCursorPosition(leftOffset, Console.CursorTop);
+            Console.Write(Cursor.CursorString + Label + Value.Substring(InputOffset, Math.Min(Width - Label.Length - 1, Value.Length - InputOffset)));
+            position.Top = Console.CursorTop;
+            position.Left = Console.CursorLeft;
+
+
+            Console.Write(new string('\n', MarginBottom+1));
 
             return position;
         }
