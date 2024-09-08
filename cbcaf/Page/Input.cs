@@ -58,27 +58,22 @@ namespace cbcaf.Page
 
         public void AddChar(char c)
         {
-            //something is wrong with the margins, added temporary corrections
             if (IsValidChar == null || IsValidChar(c))
             {
                 Value = Value.Insert(InputCursor, c.ToString());
                 InputCursor++;
             }
-            //temporary correction
-            if(InputCursor + 2 == Width - Label.Length + InputOffset)
+            if(InputCursor == Width - Label.Length + InputOffset)
             {
                 InputOffset++;
-                //temporary correction
                 Console.SetCursorPosition(LeftOffset+Label.Length+1, Console.CursorTop);
                 Console.Write(Value.Substring(InputOffset));
             }
-            //temporary correction
-            else if (Value.Length - InputOffset > Width - Label.Length - 3)
+            else if (Value.Length - InputOffset > Width - Label.Length - 1)
             {
                 Console.Write(c.ToString());
                 int cursorPos = Console.CursorLeft;
-                //temporary correction
-                Console.Write(Value.Substring(InputCursor, Width-Label.Length-InputCursor+InputOffset - 3));
+                Console.Write(Value.Substring(InputCursor, Width-Label.Length-InputCursor+InputOffset - 1));
                 Console.SetCursorPosition(cursorPos, Console.CursorTop);
             }
             else
@@ -93,7 +88,6 @@ namespace cbcaf.Page
                 InputCursor--;
                 Value = Value.Remove(InputCursor, 1);
             }
-
             Console.SetCursorPosition(Console.CursorLeft-1, Console.CursorTop);
             Console.Write(' ');
             Console.SetCursorPosition(Console.CursorLeft - 1, Console.CursorTop);
@@ -147,7 +141,10 @@ namespace cbcaf.Page
         }
         public Position PrintInputSelected(int width, int leftOffset)
         {
-            Width = width;
+            leftOffset += MarginLeft;
+            if (leftOffset < 0) leftOffset = 0;
+            width -= MarginRight;
+            Width = width -2;
             LeftOffset = leftOffset;
             Console.Write(new string('\n', MarginTop));
             if (leftOffset < 0) leftOffset = 0;
